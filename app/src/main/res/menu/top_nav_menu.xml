@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!-- Feed Button -->
+    <item
+        android:id="@+id/action_feed"
+        android:title="Feed"
+        app:showAsAction="always" />
+
+    <!-- Profile Button -->
+    <item
+        android:id="@+id/action_profile"
+        android:title="Profile"
+        app:showAsAction="always" />
+
+    <!-- Weather Button -->
+    <item
+        android:id="@+id/action_weather"
+        android:title="Weather"
+        app:showAsAction="always" />
+
+    <!-- Logout Button (Right Side) -->
+    <item
+        android:id="@+id/action_logout"
+        android:title="Logout"
+        app:showAsAction="always" />
+</menu>
