@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "403392931513",
+    "project_id": "weatherhub-1ccfb",
+    "storage_bucket": "weatherhub-1ccfb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:403392931513:android:fea77e41623e3a73609d68",
+        "android_client_info": {
+          "package_name": "com.example.android2025"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCPauCyyK00ktdhm_pstZ7zJ9GWRhED7qM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
