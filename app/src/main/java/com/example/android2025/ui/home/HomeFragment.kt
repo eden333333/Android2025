@@ -10,7 +10,6 @@ import androidx.lifecycle.ViewModelProvider
 class HomeFragment : Fragment() {
 
     private lateinit var binding: FragmentHomeBinding
-    private lateinit var authViewModel: AuthViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -21,8 +20,7 @@ class HomeFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        authViewModel = ViewModelProvider(requireActivity()).get(AuthViewModel::class.java)
-        super.onViewCreated(view, savedInstanceState)
+
 
 
     }

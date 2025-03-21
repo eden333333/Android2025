@@ -1,4 +1,5 @@
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -13,13 +14,13 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     private val repository = AuthRepository(userDao)
 
     private val _user = MutableLiveData<UserEntity?>()
-    val user: MutableLiveData<UserEntity?> = _user
+    val user: LiveData<UserEntity?> = _user // expose user data to the UI
 
     private val _error = MutableLiveData<String>()
     val error: LiveData<String> = _error
 
     // Registration function
-    fun signUp(
+    fun register(
         email: String,
         password: String,
         username: String,
@@ -29,9 +30,12 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             val result = repository.register(email, password, username, firstName, lastName)
             result.onSuccess {
+                Log.d("AuthViewModel", "Registration successful: ${it.uid}")
                 _user.value = it
             }.onFailure {
                 _error.value = it.message
+                Log.e("AuthViewModel", "Registration failed: ${it.message}")
+
             }
         }
     }
@@ -42,8 +46,10 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
             val result = repository.login(email, password)
             result.onSuccess {
                 _user.value = it
+
             }.onFailure {
                 _error.value = it.message
+
             }
         }
     }

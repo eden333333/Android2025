@@ -1,8 +1,5 @@
 package com.example.android2025.data.repository
-
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.example.android2025.data.local.UserDao
 import com.example.android2025.data.local.UserEntity
 import com.google.firebase.auth.FirebaseAuth
@@ -50,7 +47,7 @@ class AuthRepository(private val userDao: UserDao) {
             if (user != null) {
                 return Result.success(user)
             } else {
-                // If not available, create a default user record. Adjust as needed.
+                // If not available, create a default user record.
                 val newUser = UserEntity(
                     firebaseUser.uid,
                     firebaseUser.email ?: email,
@@ -68,10 +65,8 @@ class AuthRepository(private val userDao: UserDao) {
     }
 
     // Logout Function
-    suspend fun logout() {
-
+    fun logout() {
         firebaseAuth.signOut()
-
     }
 
 }

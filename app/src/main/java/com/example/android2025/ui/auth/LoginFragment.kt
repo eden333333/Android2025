@@ -26,7 +26,7 @@ class LoginFragment : Fragment() {
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        authViewModel = ViewModelProvider(this).get(AuthViewModel::class.java)
+        authViewModel = ViewModelProvider(requireActivity())[AuthViewModel::class.java]
 
         binding.btnLogin.setOnClickListener {
             val email = binding.etEmail.text.toString()

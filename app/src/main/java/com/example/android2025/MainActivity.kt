@@ -4,21 +4,12 @@ import AuthViewModel
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import com.example.android2025.ui.theme.Android2025Theme
+import androidx.navigation.ui.NavigationUI
 
 class MainActivity :  AppCompatActivity() {
 
@@ -30,19 +21,27 @@ class MainActivity :  AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
 
-        // Set up the toolbar
+        /** Set up the toolbar **/
         val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
 
-        // Initialize the NavHostFragment and NavController
+        /** Initialize the NavHostFragment and NavController **/
+
+        // first find the Fragment and cast it to NavHostFragment type
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+
+        // then get the NavController from the NavHostFragment
         navController = navHostFragment.navController
 
-        // Initialize  ViewModel for authentication
+        // Connect the toolbar with navController
+        NavigationUI.setupActionBarWithNavController(this, navController)
+
+        /** Initialize  ViewModel for authentication */
         authViewModel = ViewModelProvider(this).get(AuthViewModel::class.java)
 
     }
-    // Inflate the toolbar menu
+
+    /** Inflate the toolbar menu */
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.top_nav_menu, menu)
         return true

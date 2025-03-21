@@ -2,6 +2,7 @@ package com.example.android2025.ui.auth
 
 import AuthViewModel
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.android2025.R
 import com.example.android2025.databinding.FragmentRegisterBinding
+import kotlin.math.log
 
 class RegisterFragment : Fragment() {
 
@@ -24,16 +26,18 @@ class RegisterFragment : Fragment() {
         return binding.root
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        authViewModel = ViewModelProvider(this).get(AuthViewModel::class.java)
+        authViewModel = ViewModelProvider(requireActivity()).get(AuthViewModel::class.java)
 
         binding.btnSignUp.setOnClickListener {
+            Log.d("RegisterFragment", "Sign Up button clicked")
+
             val email = binding.etEmail.text.toString()
             val password = binding.etPassword.text.toString()
             val username = binding.etUsername.text.toString()
             val firstName = binding.etFirstName.text.toString()
             val lastName = binding.etLastName.text.toString()
 
-            authViewModel.signUp(email, password, username, firstName, lastName)
+            authViewModel.register(email, password, username, firstName, lastName)
         }
 
         // Handle Sign In navigation
