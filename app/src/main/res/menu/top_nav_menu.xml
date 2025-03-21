@@ -1,19 +1,21 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- res/menu/top_nav_menu.xml -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <item
         android:id="@+id/nav_home"
         android:title="Home"
-        app:showAsAction="always"/>
+        app:showAsAction="ifRoom"/>
+
     <item
         android:id="@+id/nav_weather"
         android:title="Weather"
-        app:showAsAction="always"/>
+        app:showAsAction="ifRoom"/>
+
     <item
         android:id="@+id/nav_profile"
         android:title="Profile"
-        app:showAsAction="always"/>
+        app:showAsAction="ifRoom"/>
+
     <item
         android:id="@+id/nav_logout"
         android:title="Logout"

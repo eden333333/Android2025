@@ -6,6 +6,8 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -20,7 +22,11 @@ class MainActivity :  AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
-
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
         /** Set up the toolbar **/
         val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
@@ -35,6 +41,16 @@ class MainActivity :  AppCompatActivity() {
 
         // Connect the toolbar with navController
         NavigationUI.setupActionBarWithNavController(this, navController)
+
+        // listen for changes in the navigation destination.
+        navController.addOnDestinationChangedListener { controller, destination, arguments ->
+            // checking if the current destination is the Login or Register fragment.
+            if (destination.id == R.id.loginFragment || destination.id == R.id.registerFragment) {
+                supportActionBar?.hide()
+            } else {
+                supportActionBar?.show()
+            }
+        }
 
         /** Initialize  ViewModel for authentication */
         authViewModel = ViewModelProvider(this).get(AuthViewModel::class.java)

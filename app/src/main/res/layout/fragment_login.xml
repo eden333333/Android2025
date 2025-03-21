@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/light_gray"
     tools:context=".ui.auth.LoginFragment">
 
-    <!-- White Box for Login Form -->
+    <!-- White Box for Login Form with uniform margin -->
     <androidx.cardview.widget.CardView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="32dp"
+        android:layout_margin="32dp"
         android:background="@android:color/white"
-        app:cardCornerRadius="20dp"
-        app:cardElevation="6dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -22,9 +22,9 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical"
-            android:padding="20dp">
+            android:padding="24dp">
 
             <!-- Login Title -->
             <TextView
@@ -32,42 +32,43 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:paddingBottom="20dp"
-                android:text="Log In"
+                android:layout_marginBottom="16dp"
+                android:text="Sign in"
                 android:textColor="@android:color/black"
                 android:textSize="26sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                tools:ignore="HardcodedText" />
 
             <!-- Email Input -->
-
-            <!-- Password Input -->
-
             <EditText
                 android:id="@+id/etEmail"
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
-                android:layout_marginBottom="14dp"
+                android:layout_marginBottom="16dp"
                 android:background="@drawable/edittext_background"
                 android:hint="Email"
                 android:inputType="textEmailAddress"
-                android:padding="14dp" />
+                android:padding="14dp"
+                tools:ignore="HardcodedText" />
 
+            <!-- Password Input -->
             <EditText
                 android:id="@+id/etPassword"
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
-                android:layout_marginBottom="24dp"
+                android:layout_marginBottom="16dp"
                 android:background="@drawable/edittext_background"
                 android:hint="Password"
                 android:inputType="textPassword"
-                android:padding="14dp" />
+                android:padding="14dp"
+                tools:ignore="HardcodedText" />
 
             <!-- Login Button -->
             <Button
                 android:id="@+id/btnLogin"
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
-                android:layout_marginBottom="20dp"
+                android:layout_marginBottom="16dp"
                 android:backgroundTint="@color/blue"
                 android:text="LOGIN"
                 android:textColor="@android:color/white"
@@ -85,7 +86,8 @@
                     android:layout_height="wrap_content"
                     android:text="Don't have an account? "
                     android:textColor="@android:color/black"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    tools:ignore="HardcodedText" />
 
                 <TextView
                     android:id="@+id/tvSignUp"
@@ -96,7 +98,8 @@
                     android:text="Sign Up"
                     android:textColor="@color/blue"
                     android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    tools:ignore="HardcodedText" />
             </LinearLayout>
 
         </LinearLayout>
