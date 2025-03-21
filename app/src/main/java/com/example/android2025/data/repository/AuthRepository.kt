@@ -8,60 +8,70 @@ import com.example.android2025.data.local.UserEntity
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.tasks.await
 
-class AuthRepository(private val auth: FirebaseAuth, private val userDao: UserDao) {
+class AuthRepository(private val userDao: UserDao) {
 
-
-    private val authStateLiveData = MutableLiveData<Boolean>()
-
-    init {
-        // Check if user is already logged in when the repository is created
-        authStateLiveData.value = auth.currentUser != null
-    }
-
-    fun getAuthState(): LiveData<Boolean> {
-        return authStateLiveData
-    }
+    private val firebaseAuth = FirebaseAuth.getInstance()
 
     // Sign Up Function
-    suspend fun signUp(email: String, password: String, username: String, firstName: String, lastName: String) {
+    suspend fun register(
+        email: String,
+        password: String,
+        username: String,
+        firstName: String,
+        lastName: String
+    )
+            : Result<UserEntity> {
         try {
-            val result = auth.createUserWithEmailAndPassword(email, password).await()
-            val firebaseUser = result.user
+            val result = firebaseAuth.createUserWithEmailAndPassword(email, password).await()
+            val firebaseUser = result.user ?: throw Exception("Firebase user is null")
+            // Create UserEntity and store in Room Database
+            val user = UserEntity(
+                uid = firebaseUser.uid,
+                email = email,
+                username = username,
+                firstName = firstName,
+                lastName = lastName
+            )
+            userDao.insertUser(user)
+            return Result.success(user)
 
-            if (firebaseUser != null) {
-                // Create UserEntity and store in Room Database
-                val user = UserEntity(
-                    uid = firebaseUser.uid,
-                    email = email,
-                    username = username,
-                    firstName = firstName,
-                    lastName = lastName
-                )
-                userDao.insertUser(user)
-
-                // Update LiveData - User is authenticated
-                authStateLiveData.postValue(true)
-            }
         } catch (e: Exception) {
-            Log.e("AuthRepository", "Sign Up Failed: ${e.message}")
-            authStateLiveData.postValue(false)
+            return Result.failure(e)
         }
     }
 
     // Login Function
-    suspend fun login(email: String, password: String) {
+    suspend fun login(email: String, password: String): Result<UserEntity> {
         try {
-            auth.signInWithEmailAndPassword(email, password).await()
-            authStateLiveData.postValue(true) // User is authenticated
+            val result = firebaseAuth.signInWithEmailAndPassword(email, password).await()
+            val firebaseUser = result.user ?: throw Exception("Firebase user is null")
+            // Check if user exists in Room Database
+            val user = userDao.getUserById(firebaseUser.uid)
+            if (user != null) {
+                return Result.success(user)
+            } else {
+                // If not available, create a default user record. Adjust as needed.
+                val newUser = UserEntity(
+                    firebaseUser.uid,
+                    firebaseUser.email ?: email,
+                    "DefaultUsername",
+                    "DefaultFirstName",
+                    "DefaultLastName"
+                )
+                userDao.insertUser(newUser)
+                return Result.success(newUser)
+
+            }
         } catch (e: Exception) {
-            Log.e("AuthRepository", "Login Failed: ${e.message}")
-            authStateLiveData.postValue(false)
+            return Result.failure(e)
         }
     }
 
     // Logout Function
-    fun logout() {
-        auth.signOut()
-        authStateLiveData.postValue(false) // User is logged out
+    suspend fun logout() {
+
+        firebaseAuth.signOut()
+
     }
+
 }

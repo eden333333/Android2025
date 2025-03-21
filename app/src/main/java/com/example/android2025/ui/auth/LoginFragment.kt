@@ -1,5 +1,6 @@
 package com.example.android2025.ui.auth
 
+import AuthViewModel
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,7 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.android2025.R
 import com.example.android2025.databinding.FragmentLoginBinding
-import com.example.android2025.viewmodel.AuthViewModel
+
 
 class LoginFragment : Fragment() {
 
@@ -21,14 +22,11 @@ class LoginFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentLoginBinding.inflate(inflater, container, false)
-        authViewModel = ViewModelProvider(this).get(AuthViewModel::class.java)
+        return binding.root
+    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        // Observe authentication state
-        authViewModel.authState.observe(viewLifecycleOwner) { isAuthenticated ->
-            if (isAuthenticated) {
-                findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
-            }
-        }
+        authViewModel = ViewModelProvider(this).get(AuthViewModel::class.java)
 
         binding.btnLogin.setOnClickListener {
             val email = binding.etEmail.text.toString()
@@ -41,6 +39,13 @@ class LoginFragment : Fragment() {
             findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
         }
 
-        return binding.root
+        // Observe user login status and navigate to HomeFragment on success
+        authViewModel.user.observe(viewLifecycleOwner) { user ->
+            user?.let {
+                findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
+            }
+        }
+
+
     }
 }

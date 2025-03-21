@@ -1,28 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <!-- Feed Button -->
+<!-- res/menu/top_nav_menu.xml -->
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/action_feed"
-        android:title="Feed"
-        app:showAsAction="always" />
-
-    <!-- Profile Button -->
+        android:id="@+id/nav_home"
+        android:title="Home" />
     <item
-        android:id="@+id/action_profile"
-        android:title="Profile"
-        app:showAsAction="always" />
-
-    <!-- Weather Button -->
+        android:id="@+id/nav_weather"
+        android:title="Weather" />
     <item
-        android:id="@+id/action_weather"
-        android:title="Weather"
-        app:showAsAction="always" />
-
-    <!-- Logout Button (Right Side) -->
+        android:id="@+id/nav_profile"
+        android:title="Profile" />
     <item
-        android:id="@+id/action_logout"
-        android:title="Logout"
-        app:showAsAction="always" />
+        android:id="@+id/nav_logout"
+        android:title="Logout" />
 </menu>
