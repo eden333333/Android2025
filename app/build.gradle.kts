@@ -67,6 +67,8 @@ dependencies {
     implementation ("com.google.firebase:firebase-auth-ktx")
     implementation ("com.google.firebase:firebase-firestore-ktx")
     implementation(platform("com.google.firebase:firebase-bom:33.11.0"))
+    // Firestore
+    implementation ("com.google.firebase:firebase-firestore-ktx")
     // Room Database
     implementation ("androidx.room:room-runtime:2.6.1")
     kapt("androidx.room:room-compiler:2.6.1")
