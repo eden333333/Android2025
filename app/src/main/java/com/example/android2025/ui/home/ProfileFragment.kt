@@ -33,6 +33,13 @@ class ProfileFragment : Fragment() {
         // Observe the user data from ViewModel
         authViewModel.user.observe(viewLifecycleOwner) { user ->
             user?.let {
+                // Load user profile photo clearly using Glide
+                Glide.with(this)
+                    .load(it.photoUrl)
+                    .placeholder(R.drawable.ic_default_profile)
+                    .error(R.drawable.ic_default_profile)
+                    .into(binding.ivProfileImage)
+
                 binding.tvTitle.text = "Welcome, ${it.firstName}!"
 
                 // Update other user details
@@ -40,12 +47,7 @@ class ProfileFragment : Fragment() {
                 binding.tvEmail.text = it.email
                 binding.tvUsername.text = "@${it.username}"
 
-                // Load user profile photo clearly using Glide
-                Glide.with(this)
-                    .load(it.photoUrl)
-                    .placeholder(R.drawable.ic_default_profile)
-                    .error(R.drawable.ic_default_profile)
-                    .into(binding.ivProfileImage)
+
             }
         }
 

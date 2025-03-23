@@ -1,10 +1,13 @@
 package com.example.android2025
 
 import AuthViewModel
+import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -17,6 +20,10 @@ class MainActivity :  AppCompatActivity() {
 
     private lateinit var navController: NavController
     private lateinit var authViewModel: AuthViewModel
+    private lateinit var imagePickerLauncher: ActivityResultLauncher<String>
+    private var imagePickerCallback: ((Uri?) -> Unit)? = null
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,7 +40,7 @@ class MainActivity :  AppCompatActivity() {
 
         /** Initialize the NavHostFragment and NavController **/
 
-        // first find the Fragment and cast it to NavHostFragment type
+        // first find the Fragment container and cast it to NavHostFragment type
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
 
         // then get the NavController from the NavHostFragment
@@ -54,6 +61,12 @@ class MainActivity :  AppCompatActivity() {
 
         /** Initialize  ViewModel for authentication */
         authViewModel = ViewModelProvider(this).get(AuthViewModel::class.java)
+
+
+        /** Register the global image picker launcher */
+        imagePickerLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+            imagePickerCallback?.invoke(uri)
+        }
 
     }
 
@@ -92,5 +105,11 @@ class MainActivity :  AppCompatActivity() {
     // Handle Up navigation
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp() || super.onSupportNavigateUp()
+    }
+
+    // Public method to allow fragments to launch the image picker
+    fun launchImagePicker(callback: (Uri?) -> Unit) {
+        imagePickerCallback = callback
+        imagePickerLauncher.launch("image/*")
     }
 }

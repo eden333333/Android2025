@@ -25,13 +25,29 @@ class LoginFragment : Fragment() {
         return binding.root
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
         authViewModel = ViewModelProvider(requireActivity())[AuthViewModel::class.java]
 
+
+        // Handle Login button click
         binding.btnLogin.setOnClickListener {
             val email = binding.etEmail.text.toString()
             val password = binding.etPassword.text.toString()
-
+            // Validate input fields
+            when {
+                email.isEmpty() || password.isEmpty() -> {
+                    binding.tvError.text = "Please fill in all fields."
+                    binding.tvError.visibility = View.VISIBLE
+                    return@setOnClickListener
+                }
+                !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches() -> {
+                    binding.tvError.text = "Please enter a valid email address."
+                    binding.tvError.visibility = View.VISIBLE
+                    return@setOnClickListener
+                }
+                else -> {
+                    binding.tvError.visibility = View.GONE
+                }
+            }
             authViewModel.login(email, password)
         }
         // Handle Sign Up navigation
@@ -43,6 +59,15 @@ class LoginFragment : Fragment() {
         authViewModel.user.observe(viewLifecycleOwner) { user ->
             user?.let {
                 findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
+            }
+        }
+        // Observe error messages and display them
+        authViewModel.errorLogin.observe(viewLifecycleOwner) { errorMsg ->
+            if (errorMsg.isNullOrEmpty()) {
+                binding.tvError.visibility = View.GONE
+            } else {
+                binding.tvError.text = errorMsg
+                binding.tvError.visibility = View.VISIBLE
             }
         }
 

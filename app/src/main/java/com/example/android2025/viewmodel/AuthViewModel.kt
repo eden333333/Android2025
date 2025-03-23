@@ -17,8 +17,11 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     private val _user = MutableLiveData<UserEntity?>()
     val user: LiveData<UserEntity?> = _user // expose user data to the UI
 
-    private val _error = MutableLiveData<String>()
-    val error: LiveData<String> = _error
+    private val _errorRegister = MutableLiveData<String>()
+    val errorRegister: LiveData<String> = _errorRegister
+
+    private val _errorLogin = MutableLiveData<String>()
+    val errorLogin: LiveData<String> = _errorLogin
 
     // Registration function
     fun register(
@@ -35,7 +38,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                 Log.d("AuthViewModel", "Registration successful: ${it.uid}")
                 _user.value = it
             }.onFailure {
-                _error.value = it.message
+                _errorRegister.value = it.message
                 Log.e("AuthViewModel", "Registration failed: ${it.message}")
 
             }
@@ -50,7 +53,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                 _user.value = it
 
             }.onFailure {
-                _error.value = it.message
+                _errorLogin.value = it.message
 
             }
         }

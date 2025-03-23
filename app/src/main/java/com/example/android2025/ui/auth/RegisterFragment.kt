@@ -11,6 +11,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.example.android2025.MainActivity
 import com.example.android2025.R
 import com.example.android2025.databinding.FragmentRegisterBinding
 
@@ -20,12 +21,7 @@ class RegisterFragment : Fragment() {
     private lateinit var binding: FragmentRegisterBinding
     private lateinit var authViewModel: AuthViewModel
     private var imageUri: Uri? = null
-    private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-        uri?.let {
-            imageUri = it
-            binding.ivProfileImage.setImageURI(it)
-        }
-    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,10 +31,21 @@ class RegisterFragment : Fragment() {
         return binding.root
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        authViewModel = ViewModelProvider(requireActivity()).get(AuthViewModel::class.java)
-        // Open gallery when image is clicked
+        authViewModel = ViewModelProvider(requireActivity())[AuthViewModel::class.java]
+
+
+
+        // Clear error message
+        binding.tvError.text = ""
+
+        // Open gallery when image is clicked and set the image to the ImageView
         binding.ivProfileImage.setOnClickListener {
-            pickImageLauncher.launch("image/*")
+            (activity as? MainActivity)?.launchImagePicker { uri ->
+                uri?.let {
+                    imageUri = it
+                    binding.ivProfileImage.setImageURI(it)
+                }
+            }
         }
         binding.btnSignUp.setOnClickListener {
             Log.d("RegisterFragment", "Sign Up button clicked")
@@ -48,19 +55,51 @@ class RegisterFragment : Fragment() {
             val username = binding.etUsername.text.toString()
             val firstName = binding.etFirstName.text.toString()
             val lastName = binding.etLastName.text.toString()
+
+            // Validate input fields
+            when {
+                email.isEmpty() || password.isEmpty() || username.isEmpty() || firstName.isEmpty() || lastName.isEmpty() -> {
+                    binding.tvError.text = "Please fill in all fields."
+                    binding.tvError.visibility = View.VISIBLE
+                    return@setOnClickListener
+                }
+                !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches() -> {
+                    binding.tvError.text = "Please enter a valid email address."
+                    binding.tvError.visibility = View.VISIBLE
+                    return@setOnClickListener
+                }
+                password.length < 6 -> {
+                    binding.tvError.text = "Password must be at least 6 characters."
+                    binding.tvError.visibility = View.VISIBLE
+                    return@setOnClickListener
+                }
+                else -> {
+                    binding.tvError.visibility = View.GONE
+                }
+            }
             authViewModel.register(email, password, username, firstName, lastName, imageUri)
         }
-
-        // Handle Sign In navigation
-        binding.tvLogin.setOnClickListener {
-            findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
+        // Observe error messages and display them
+        authViewModel.errorRegister.observe(viewLifecycleOwner) { errorMsg ->
+            if (errorMsg.isNullOrEmpty()) {
+                binding.tvError.visibility = View.GONE
+            } else {
+                binding.tvError.text = errorMsg
+                binding.tvError.visibility = View.VISIBLE
+            }
         }
-
         // Observe user signup status and navigate to HomeFragment on success
         authViewModel.user.observe(viewLifecycleOwner) { user ->
             user?.let {
                 findNavController().navigate(R.id.action_registerFragment_to_homeFragment)
             }
         }
+        // Handle Sign In navigation
+        binding.tvLogin.setOnClickListener {
+            findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
+        }
+
+
+
     }
 }
