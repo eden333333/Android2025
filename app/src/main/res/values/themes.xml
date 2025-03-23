@@ -5,7 +5,6 @@
     <style name="Theme.Android2025" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Screen background -->
         <item name="android:windowBackground">@color/light_gray</item>
-
         <!-- Toolbar/AppBar colors -->
         <item name="colorPrimary">@color/blue</item>
         <item name="colorOnPrimary">@color/white</item>
@@ -17,6 +16,11 @@
         <item name="android:background">?attr/colorPrimary</item>
         <item name="titleTextColor">?attr/colorOnPrimary</item>
         <item name="navigationIconTint">?attr/colorOnPrimary</item>
+    </style>
+    <!-- CircleImageView style -->
+    <style name="CircleImageView" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
     </style>
 
 </resources>

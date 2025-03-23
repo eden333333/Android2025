@@ -37,7 +37,8 @@
                 android:text="Sign Up"
                 android:textColor="@android:color/black"
                 android:textSize="24sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                tools:ignore="HardcodedText" />
 
             <!-- Username Input -->
             <EditText
@@ -47,7 +48,9 @@
                 android:layout_marginBottom="16dp"
                 android:background="@drawable/edittext_background"
                 android:hint="Username"
-                android:padding="14dp" />
+                android:padding="14dp"
+                android:inputType="text"
+                tools:ignore="HardcodedText" />
 
             <!-- First Name Input -->
             <EditText
@@ -59,7 +62,7 @@
                 android:hint="First Name"
                 android:inputType="textPersonName"
                 android:padding="14dp"
-                />
+                tools:ignore="HardcodedText" />
 
             <!-- Last Name Input -->
             <EditText
@@ -70,7 +73,8 @@
                 android:background="@drawable/edittext_background"
                 android:hint="Last Name"
                 android:padding="14dp"
-                android:inputType="textPersonName"/>
+                android:inputType="textPersonName"
+                tools:ignore="HardcodedText" />
 
             <!-- Email Input -->
             <EditText
@@ -82,7 +86,7 @@
                 android:hint="Email"
                 android:inputType="textEmailAddress"
                 android:padding="14dp"
-                />
+                tools:ignore="HardcodedText" />
 
             <!-- Password Input -->
             <EditText
@@ -92,9 +96,27 @@
                 android:layout_marginBottom="16dp"
                 android:background="@drawable/edittext_background"
                 android:hint="Password"
-                android:padding="14dp" />
+                android:padding="14dp"
+                android:inputType="textPassword"
+                tools:ignore="HardcodedText" />
+
+            <!-- Profile Picture Selection -->
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/ivProfileImage"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="16dp"
+                android:background="@color/light_gray"
+                android:clickable="true"
+                android:focusable="true"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_add_photo"
+                app:shapeAppearanceOverlay="@style/CircleImageView"/>
 
             <!-- Sign Up Button -->
+
             <Button
                 android:id="@+id/btnSignUp"
                 android:layout_width="match_parent"
@@ -103,7 +125,9 @@
                 android:backgroundTint="@color/blue"
                 android:text="Sign Up"
                 android:textColor="@android:color/white"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                tools:ignore="HardcodedText" />
+
 
             <!-- Login Text Inside CardView -->
             <LinearLayout
@@ -111,7 +135,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:orientation="horizontal"
-                android:padding="16px">
+                android:padding="16dp">
 
                 <TextView
                     android:id="@+id/tvAlreadyHaveAccount"
@@ -120,7 +144,7 @@
                     android:text="Already have an account? "
                     android:textColor="@android:color/black"
                     android:textSize="16sp"
-                    />
+                    tools:ignore="HardcodedText" />
 
                 <TextView
                     android:id="@+id/tvLogin"
@@ -131,7 +155,8 @@
                     android:text="Log In"
                     android:textColor="@color/blue"
                     android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    tools:ignore="HardcodedText" />
             </LinearLayout>
 
         </LinearLayout>

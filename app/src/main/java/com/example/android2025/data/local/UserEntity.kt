@@ -10,5 +10,6 @@ data class UserEntity(
     val email: String,
     val username: String,
     val firstName: String,
-    val lastName: String
+    val lastName: String,
+    val photoUrl: String? = null
 )

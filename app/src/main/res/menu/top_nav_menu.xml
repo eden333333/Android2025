@@ -3,21 +3,25 @@
 
     <item
         android:id="@+id/nav_home"
-        android:title="Home"
-        app:showAsAction="ifRoom"/>
+        android:title=""
+        android:icon="@drawable/ic_home"
+        app:showAsAction="always"/>
 
     <item
         android:id="@+id/nav_weather"
-        android:title="Weather"
-        app:showAsAction="ifRoom"/>
+        android:title=""
+        android:icon="@drawable/ic_weather"
+        app:showAsAction=""/>
 
     <item
         android:id="@+id/nav_profile"
-        android:title="Profile"
-        app:showAsAction="ifRoom"/>
+        android:title=""
+        android:icon="@drawable/ic_profile"
+        app:showAsAction="always"/>
 
     <item
         android:id="@+id/nav_logout"
-        android:title="Logout"
+        android:title=""
+        android:icon="@drawable/ic_logout"
         app:showAsAction="always"/>
 </menu>

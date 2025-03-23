@@ -1,4 +1,5 @@
 import android.app.Application
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
@@ -11,7 +12,7 @@ import kotlinx.coroutines.launch
 
 class AuthViewModel(application: Application) : AndroidViewModel(application) {
     private val userDao = AppDatabase.getDatabase(application).userDao()
-    private val repository = AuthRepository(userDao)
+    private val repository = AuthRepository(application,userDao)
 
     private val _user = MutableLiveData<UserEntity?>()
     val user: LiveData<UserEntity?> = _user // expose user data to the UI
@@ -25,10 +26,11 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         password: String,
         username: String,
         firstName: String,
-        lastName: String
+        lastName: String,
+        imageUri: Uri?
     ) {
         viewModelScope.launch {
-            val result = repository.register(email, password, username, firstName, lastName)
+            val result = repository.register(email, password, username, firstName, lastName,imageUri)
             result.onSuccess {
                 Log.d("AuthViewModel", "Registration successful: ${it.uid}")
                 _user.value = it

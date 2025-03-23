@@ -43,7 +43,7 @@ class MainActivity :  AppCompatActivity() {
         NavigationUI.setupActionBarWithNavController(this, navController)
 
         // listen for changes in the navigation destination.
-        navController.addOnDestinationChangedListener { controller, destination, arguments ->
+        navController.addOnDestinationChangedListener { _, destination, _ ->
             // checking if the current destination is the Login or Register fragment.
             if (destination.id == R.id.loginFragment || destination.id == R.id.registerFragment) {
                 supportActionBar?.hide()
