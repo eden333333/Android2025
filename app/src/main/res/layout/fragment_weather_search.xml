@@ -1,0 +1,51 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:paddingTop="?attr/actionBarSize"
+    android:background="#F5F5F5">
+
+    <LinearLayout
+        android:id="@+id/weatherSearchLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:background="#FFFFFF">
+
+        <!-- Search Box -->
+        <AutoCompleteTextView
+            android:id="@+id/cityInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter city name"
+            android:inputType="text"
+            android:background="@android:drawable/editbox_background"
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:padding="12dp"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Search Button -->
+        <Button
+            android:id="@+id/getWeatherButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Get Weather"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Result Area -->
+       <TextView
+    android:id="@+id/weatherResult"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:textSize="18sp"
+    android:textColor="#000000"
+    android:background="#E0F7FA"
+    android:padding="16dp"
+    android:layout_marginTop="24dp"
+    android:visibility="gone" />
+
+
+    </LinearLayout>
+</ScrollView>

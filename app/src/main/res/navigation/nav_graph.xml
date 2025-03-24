@@ -69,4 +69,11 @@
         android:label="Weather"
         tools:layout="@layout/fragment_weather">
     </fragment>
+    
+    <fragment
+    android:id="@+id/weatherSearchFragment"
+    android:name="com.example.android2025.ui.home.WeatherSearchFragment"
+    android:label="Weather Search"
+    tools:layout="@layout/fragment_weather_search" />
+
 </navigation>
