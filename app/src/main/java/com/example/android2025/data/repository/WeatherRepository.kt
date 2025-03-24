@@ -31,7 +31,7 @@ class WeatherRepository {
                 val temperature = currentWeather.getDouble("temperature")
                 val windSpeed = currentWeather.getDouble("windspeed")
 
-                Weather(city, temperature, windSpeed)
+                Weather(city, temperature, windSpeed, lat, lon)
 
             } catch (e: Exception) {
                 e.printStackTrace()
