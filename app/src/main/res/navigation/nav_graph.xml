@@ -63,12 +63,6 @@
     </fragment>
 
     <!-- Weather Page -->
-    <fragment
-        android:id="@+id/weatherFragment"
-        android:name="com.example.android2025.ui.home.WeatherFragment"
-        android:label="Weather"
-        tools:layout="@layout/fragment_weather">
-    </fragment>
     
     <fragment
     android:id="@+id/weatherSearchFragment"

@@ -51,7 +51,6 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
                 profileImageUrl = currentUser.photoUrl,
                 timestamp = System.currentTimeMillis()
             )
-        Log.d("PostViewModel", "createPost: $post")
             viewModelScope.launch {
                 repository.uploadPost(post)
             }
