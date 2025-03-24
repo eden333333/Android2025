@@ -84,14 +84,12 @@ class WeatherSearchFragment : Fragment() {
     weatherViewModel.weather.collectLatest { weather ->
         binding.weatherResult.visibility = View.VISIBLE //
         binding.weatherResult.text = if (weather != null) {
-            Log.d("WeatherFragment", "Received weather: $weather")
             """
                 🌤 City: ${weather.city}
                 🌡 Temperature: ${weather.temperature}°C
                 💨 Wind Speed: ${weather.windSpeed} km/h
             """.trimIndent()
         } else {
-            Log.d("WeatherFragment", "No weather result")
             "No weather data found."
         }
     }
