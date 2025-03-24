@@ -13,6 +13,7 @@ class WeatherRepository {
             try {
                 val geoUrl = "https://geocoding-api.open-meteo.com/v1/search?name=$city&count=1&format=json"
                 val geoResponse = fetchResponse(geoUrl)
+                println("🌍 Geo response: $geoResponse")
                 val geoJson = JSONObject(geoResponse)
                 val results = geoJson.optJSONArray("results")
 
@@ -23,6 +24,7 @@ class WeatherRepository {
 
                 val weatherUrl = "https://api.open-meteo.com/v1/forecast?latitude=$lat&longitude=$lon&current_weather=true"
                 val weatherResponse = fetchResponse(weatherUrl)
+                println("🌤️ Weather response: $weatherResponse")
                 val weatherJson = JSONObject(weatherResponse)
 
                 val currentWeather = weatherJson.getJSONObject("current_weather")

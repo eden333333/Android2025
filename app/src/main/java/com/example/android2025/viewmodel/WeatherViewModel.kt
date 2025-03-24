@@ -1,5 +1,6 @@
 package com.example.android2025.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.android2025.data.model.Weather
@@ -15,6 +16,7 @@ class WeatherViewModel(private val repository: WeatherRepository) : ViewModel() 
     fun fetchWeather(city: String) {
         viewModelScope.launch {
             _weather.value = repository.getWeather(city)
+            Log.d("WeatherViewModel", "Fetching weather for city: $city")
         }
     }
 }

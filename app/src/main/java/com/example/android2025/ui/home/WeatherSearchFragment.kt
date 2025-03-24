@@ -1,6 +1,7 @@
 package com.example.android2025.ui.home
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -53,7 +54,9 @@ class WeatherSearchFragment : Fragment() {
         // Handle selection from suggestions
         binding.cityInput.setOnItemClickListener { parent, _, position, _ ->
             val selected = parent.getItemAtPosition(position).toString()
-            weatherViewModel.fetchWeather(selected)
+            val cleanCityString = selected.split(",")[0]
+            weatherViewModel.fetchWeather(cleanCityString)
+            Log.d("WeatherSearch", "Selected city from suggestion: $selected")
         }
 
         // Handle typing input
@@ -61,6 +64,7 @@ class WeatherSearchFragment : Fragment() {
             val query = it?.toString() ?: return@addTextChangedListener
             lifecycleScope.launch {
                 cityViewModel.fetchCitySuggestions(query)
+                Log.d("WeatherSearch", "User typing: $query")
             }
         }
 
@@ -68,6 +72,7 @@ class WeatherSearchFragment : Fragment() {
         binding.getWeatherButton.setOnClickListener {
             val city = binding.cityInput.text.toString()
             weatherViewModel.fetchWeather(city)
+            Log.d("WeatherSearch", "Manual button clicked for city: $city")
         }
 
         // Observe city suggestions
@@ -82,6 +87,7 @@ class WeatherSearchFragment : Fragment() {
         // Observe weather results
    lifecycleScope.launch {
     weatherViewModel.weather.collectLatest { weather ->
+    Log.d("WeatherSearch", "Flow emitted: $weather")
         binding.weatherResult.visibility = View.VISIBLE //
         binding.weatherResult.text = if (weather != null) {
             """
