@@ -28,6 +28,7 @@ class AuthRepository(private val context: Context, private val userDao: UserDao)
             "api_secret" to "K5iU9t1dT2YxLGkzmQrt3ZilQgw"
         )
     )
+    fun getUser(): LiveData<UserEntity?> = userDao.getUser()
     // Sign Up Function
     suspend fun register(
         email: String,
@@ -124,6 +125,7 @@ class AuthRepository(private val context: Context, private val userDao: UserDao)
             userDao.clearUsers()
         }
     }
+
 
     // Helper function to convert UserEntity to Map
     private fun UserEntity.toMap(): Map<String, Any?> = mapOf(
