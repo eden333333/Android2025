@@ -5,15 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
-import android.widget.Button
-import android.widget.TextView
-import android.widget.AdapterView
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.example.android2025.R
 import com.example.android2025.databinding.FragmentWeatherSearchBinding
 import com.example.android2025.data.remote.LocationIQApiService
 import com.example.android2025.data.repository.CityRepository
@@ -44,37 +39,38 @@ class WeatherSearchFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Initialize repositories and viewmodels
         val cityRepo = CityRepository(LocationIQApiService.create())
         val weatherRepo = WeatherRepository()
 
         cityViewModel = ViewModelProvider(this, CityViewModelFactory(cityRepo))[CityViewModel::class.java]
         weatherViewModel = ViewModelProvider(this, WeatherViewModelFactory(weatherRepo))[WeatherViewModel::class.java]
 
-        val cityInput = view.findViewById<AutoCompleteTextView>(R.id.cityInput)
-        val getWeatherButton = view.findViewById<Button>(R.id.getWeatherButton)
-        val weatherResult = view.findViewById<TextView>(R.id.weatherResult)
-
+        // Setup adapter for AutoCompleteTextView
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, ArrayList<String>())
-        cityInput.setAdapter(adapter)
+        binding.cityInput.setAdapter(adapter)
 
-        cityInput.setOnItemClickListener { parent: AdapterView<*>, _: View, position: Int, _: Long ->
+        // Handle selection from suggestions
+        binding.cityInput.setOnItemClickListener { parent, _, position, _ ->
             val selected = parent.getItemAtPosition(position).toString()
             weatherViewModel.fetchWeather(selected)
         }
 
-        cityInput.addTextChangedListener {
+        // Handle typing input
+        binding.cityInput.addTextChangedListener {
             val query = it?.toString() ?: return@addTextChangedListener
             lifecycleScope.launch {
                 cityViewModel.fetchCitySuggestions(query)
             }
         }
 
-        getWeatherButton.setOnClickListener {
-            val city = cityInput.text.toString()
+        // Handle "Get Weather" button click
+        binding.getWeatherButton.setOnClickListener {
+            val city = binding.cityInput.text.toString()
             weatherViewModel.fetchWeather(city)
         }
 
-        // Observe city suggestions using Flow
+        // Observe city suggestions
         lifecycleScope.launch {
             cityViewModel.citySuggestions.collectLatest { suggestions ->
                 adapter.clear()
@@ -83,16 +79,24 @@ class WeatherSearchFragment : Fragment() {
             }
         }
 
-        // Observe weather result using Flow
-        lifecycleScope.launch {
-            weatherViewModel.weather.collectLatest { weather ->
-                weatherResult.text = if (weather != null) {
-                    "City: ${weather.city}\nTemperature: ${weather.temperature}°C\nWind Speed: ${weather.windSpeed} km/h"
-                } else {
-                    ""
-                }
-            }
+        // Observe weather results
+   lifecycleScope.launch {
+    weatherViewModel.weather.collectLatest { weather ->
+        binding.weatherResult.visibility = View.VISIBLE // ← Force it for now
+        binding.weatherResult.text = if (weather != null) {
+            Log.d("WeatherFragment", "Received weather: $weather")
+            """
+                🌤 City: ${weather.city}
+                🌡 Temperature: ${weather.temperature}°C
+                💨 Wind Speed: ${weather.windSpeed} km/h
+            """.trimIndent()
+        } else {
+            Log.d("WeatherFragment", "No weather result")
+            "No weather data found."
         }
+    }
+}
+
     }
 
     override fun onDestroyView() {

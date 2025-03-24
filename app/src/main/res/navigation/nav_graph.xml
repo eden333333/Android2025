@@ -60,8 +60,9 @@
     </fragment>
     
     <fragment
-    android:id="@+id/weatherFragment"
-    android:name="com.eden.myandroid.ui.home.WeatherSearchFragment"
-    android:label="Weather"
+    android:id="@+id/weatherSearchFragment"
+    android:name="com.example.android2025.ui.home.WeatherSearchFragment"
+    android:label="Weather Search"
     tools:layout="@layout/fragment_weather_search" />
+
 </navigation>

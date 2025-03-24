@@ -70,8 +70,8 @@ class MainActivity :  AppCompatActivity() {
                 navController.navigate(R.id.homeFragment)
                 return true
             }
-            R.id.nav_weather -> {
-                navController.navigate(R.id.weatherFragment)
+           R.id.nav_weather -> {
+                navController.navigate(R.id.weatherSearchFragment)
                 return true
             }
             R.id.nav_profile -> {
