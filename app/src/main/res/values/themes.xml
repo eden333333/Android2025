@@ -5,7 +5,7 @@
     <style name="Theme.Android2025" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Screen background -->
         <item name="android:windowBackground">@color/light_gray</item>
-        <!-- Toolbar/AppBar colors -->
+        <!--colors -->
         <item name="colorPrimary">@color/blue</item>
         <item name="colorOnPrimary">@color/white</item>
         <item name="toolbarStyle">@style/Widget.Android2025.Toolbar</item>
@@ -22,5 +22,6 @@
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
     </style>
+
 
 </resources>
