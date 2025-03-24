@@ -92,7 +92,7 @@ class MainActivity :  AppCompatActivity() {
                 return true
             }
             R.id.nav_logout -> {
-                // Trigger logout in your ViewModel
+                // Trigger logout in ViewModel
                 authViewModel.logout()
                 // Navigate back to LoginFragment after logout
                 navController.navigate(R.id.loginFragment)

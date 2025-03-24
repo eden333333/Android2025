@@ -33,7 +33,10 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         imageUri: Uri?
     ) {
         viewModelScope.launch {
-            val result = repository.register(email, password, username, firstName, lastName,imageUri)
+            val photoUrl = imageUri?.let { uri ->
+                repository.uploadImageToCloudinary(uri)
+            }
+            val result = repository.register(email, password, username, firstName, lastName, photoUrl)
             result.onSuccess {
                 Log.d("AuthViewModel", "Registration successful: ${it.uid}")
                 _user.value = it

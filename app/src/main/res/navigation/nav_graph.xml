@@ -43,6 +43,17 @@
         tools:layout="@layout/fragment_home">
     </fragment>
 
+    <!-- Create Post Screen -->
+    <fragment
+        android:id="@+id/createPostFragment"
+        android:name="com.example.android2025.ui.post.CreatePostFragment"
+        android:label="Create Post"
+        tools:layout="@layout/fragment_create_post">
+        <action
+            android:id="@+id/action_createPostFragment_to_homeFragment"
+            app:destination="@id/homeFragment"/>
+    </fragment>
+
     <!-- Profile Page -->
     <fragment
         android:id="@+id/profileFragment"

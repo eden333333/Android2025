@@ -3,6 +3,7 @@ package com.example.android2025.data.repository
 import android.content.Context
 import android.net.Uri
 import android.util.Log
+import androidx.lifecycle.LiveData
 import com.cloudinary.Cloudinary
 import com.example.android2025.data.local.UserDao
 import com.example.android2025.data.local.UserEntity
@@ -27,7 +28,6 @@ class AuthRepository(private val context: Context, private val userDao: UserDao)
             "api_secret" to "K5iU9t1dT2YxLGkzmQrt3ZilQgw"
         )
     )
-
     // Sign Up Function
     suspend fun register(
         email: String,
@@ -35,34 +35,13 @@ class AuthRepository(private val context: Context, private val userDao: UserDao)
         username: String,
         firstName: String,
         lastName: String,
-        imageUri: Uri?
+        photoUrl: String?
     ): Result<UserEntity> {
         try {
             // Create user in Firebase Authentication
             val result = firebaseAuth.createUserWithEmailAndPassword(email, password).await()
             val firebaseUser = result.user ?: throw Exception("Firebase user not found")
             Log.d("AuthRepository", "Firebase user created with UID: ${firebaseUser.uid}")
-
-            var photoUrl: String? = null
-
-            // Upload image to Cloudinary if provided
-            imageUri?.let { uri ->
-                try {
-                    Log.d("CloudinaryUpload", "Uploading image: $uri")
-                    val inputStream = context.contentResolver.openInputStream(uri)
-                        ?: throw Exception("Input stream is null")
-                    inputStream.use {
-                        val uploadResult = withContext(Dispatchers.IO) {
-                            cloudinary.uploader().upload(it, mapOf("folder" to "profile_photos"))
-                        }
-                        photoUrl = uploadResult["secure_url"] as? String
-                            ?: throw Exception("secure URL not found")
-                        Log.d("CloudinaryUpload", "Image uploaded successfully: $photoUrl")
-                    }
-                } catch (e: Exception) {
-                    throw Exception("Image upload error: ${e.message}")
-                }
-            } ?: Log.w("CloudinaryUpload", "No image URI provided.")
 
             // Create UserEntity
             val user = UserEntity(
@@ -81,7 +60,9 @@ class AuthRepository(private val context: Context, private val userDao: UserDao)
                 .await()
 
             // Save user to Room Database (local)
-            userDao.insertUser(user)
+            withContext(Dispatchers.IO) {
+                userDao.insertUser(user)
+            }
             return Result.success(user)
         } catch (e: Exception) {
             // Check for specific registration errors and provide custom messages
@@ -121,7 +102,9 @@ class AuthRepository(private val context: Context, private val userDao: UserDao)
             )
 
             // Save user to Room Database (local)
-            userDao.insertUser(user)
+            withContext(Dispatchers.IO) {
+                userDao.insertUser(user)
+            }
             return Result.success(user)
         } catch (e: Exception) {
             // Check for specific login errors and provide custom messages
@@ -137,7 +120,9 @@ class AuthRepository(private val context: Context, private val userDao: UserDao)
     // Logout Function
     suspend fun logout() {
         firebaseAuth.signOut()
-        userDao.clearUsers()
+        withContext(Dispatchers.IO) {
+            userDao.clearUsers()
+        }
     }
 
     // Helper function to convert UserEntity to Map
@@ -149,4 +134,16 @@ class AuthRepository(private val context: Context, private val userDao: UserDao)
         "lastName" to lastName,
         "photoUrl" to photoUrl
     )
+    suspend fun uploadImageToCloudinary(imageUri: Uri): String? {
+        return try {
+            context.contentResolver.openInputStream(imageUri)?.use { inputStream ->
+                val uploadResult = withContext(Dispatchers.IO) {
+                    cloudinary.uploader().upload(inputStream, mapOf("folder" to "post_images"))
+                }
+                uploadResult["secure_url"] as? String
+            }
+        } catch (e: Exception) {
+            null
+        }
+    }
 }
