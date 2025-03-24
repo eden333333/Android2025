@@ -82,7 +82,7 @@ class WeatherSearchFragment : Fragment() {
         // Observe weather results
    lifecycleScope.launch {
     weatherViewModel.weather.collectLatest { weather ->
-        binding.weatherResult.visibility = View.VISIBLE // ← Force it for now
+        binding.weatherResult.visibility = View.VISIBLE //
         binding.weatherResult.text = if (weather != null) {
             Log.d("WeatherFragment", "Received weather: $weather")
             """
