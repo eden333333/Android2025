@@ -1,29 +1,35 @@
 package com.example.android2025.ui.home
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import androidx.core.app.ActivityCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.example.android2025.databinding.FragmentWeatherSearchBinding
 import com.example.android2025.data.remote.LocationIQApiService
 import com.example.android2025.data.repository.CityRepository
 import com.example.android2025.data.repository.WeatherRepository
+import com.example.android2025.databinding.FragmentWeatherSearchBinding
 import com.example.android2025.viewmodel.CityViewModel
 import com.example.android2025.viewmodel.CityViewModelFactory
 import com.example.android2025.viewmodel.WeatherViewModel
 import com.example.android2025.viewmodel.WeatherViewModelFactory
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -32,6 +38,8 @@ class WeatherSearchFragment : Fragment(), OnMapReadyCallback {
     private lateinit var mapView: MapView
     private var map: GoogleMap? = null
     private var lastLatLng: LatLng? = null
+    private var currentMapType = GoogleMap.MAP_TYPE_NORMAL
+    private val locationPermissionCode = 1001
 
     private var _binding: FragmentWeatherSearchBinding? = null
     private val binding get() = _binding!!
@@ -50,6 +58,12 @@ class WeatherSearchFragment : Fragment(), OnMapReadyCallback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        mapView = binding.mapView
+        mapView.onCreate(savedInstanceState)
+        mapView.getMapAsync(this)
+
+        checkLocationPermission()
+
         val cityRepo = CityRepository(LocationIQApiService.create())
         val weatherRepo = WeatherRepository()
 
@@ -58,10 +72,6 @@ class WeatherSearchFragment : Fragment(), OnMapReadyCallback {
 
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, ArrayList<String>())
         binding.cityInput.setAdapter(adapter)
-
-        mapView = binding.mapView
-        mapView.onCreate(savedInstanceState)
-        mapView.getMapAsync(this)
 
         binding.cityInput.setOnItemClickListener { parent, _, position, _ ->
             val selected = parent.getItemAtPosition(position).toString()
@@ -82,6 +92,28 @@ class WeatherSearchFragment : Fragment(), OnMapReadyCallback {
             val city = binding.cityInput.text.toString()
             weatherViewModel.fetchWeather(city)
             Log.d("WeatherSearch", "Manual button clicked for city: $city")
+        }
+
+        binding.mapTypeButton.setOnClickListener {
+            currentMapType = when (currentMapType) {
+                GoogleMap.MAP_TYPE_NORMAL -> {
+                    binding.mapTypeButton.text = "Map: Satellite"
+                    GoogleMap.MAP_TYPE_SATELLITE
+                }
+                GoogleMap.MAP_TYPE_SATELLITE -> {
+                    binding.mapTypeButton.text = "Map: Terrain"
+                    GoogleMap.MAP_TYPE_TERRAIN
+                }
+                GoogleMap.MAP_TYPE_TERRAIN -> {
+                    binding.mapTypeButton.text = "Map: Hybrid"
+                    GoogleMap.MAP_TYPE_HYBRID
+                }
+                else -> {
+                    binding.mapTypeButton.text = "Map: Normal"
+                    GoogleMap.MAP_TYPE_NORMAL
+                }
+            }
+            map?.mapType = currentMapType
         }
 
         lifecycleScope.launch {
@@ -111,6 +143,40 @@ class WeatherSearchFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
+    private fun checkLocationPermission() {
+        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), locationPermissionCode)
+        } else {
+            enableMyLocation()
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        if (requestCode == locationPermissionCode && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            enableMyLocation()
+        } else {
+            Snackbar.make(binding.root, "Location permission denied", Snackbar.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun enableMyLocation() {
+        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            map?.isMyLocationEnabled = true
+
+            val fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+            fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+                location?.let {
+                    val latLng = LatLng(it.latitude, it.longitude)
+                    val cameraPosition = CameraPosition.Builder()
+                        .target(latLng)
+                        .zoom(12f)
+                        .build()
+                    map?.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
+                }
+            }
+        }
+    }
+
     private fun updateMap() {
         lastLatLng?.let {
             map?.clear()
@@ -121,6 +187,7 @@ class WeatherSearchFragment : Fragment(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
+        map?.mapType = currentMapType
         updateMap()
     }
 

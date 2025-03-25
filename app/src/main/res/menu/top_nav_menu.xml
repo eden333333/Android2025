@@ -9,9 +9,9 @@
 
     <item
         android:id="@+id/nav_weather"
-        android:title="Weather"
+        android:title="Search Weather"
         android:icon="@drawable/ic_weather"
-        app:showAsAction=""/>
+        app:showAsAction="always"/>
 
     <item
         android:id="@+id/nav_profile"
