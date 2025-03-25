@@ -41,6 +41,9 @@
         android:name="com.example.android2025.ui.home.HomeFragment"
         android:label="Feed"
         tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_homeFragment_to_createPostFragment"
+            app:destination="@id/createPostFragment"/>
     </fragment>
 
     <!-- Create Post Screen -->
@@ -54,14 +57,6 @@
             app:destination="@id/homeFragment"/>
     </fragment>
 
-    <!-- Profile Page -->
-    <fragment
-        android:id="@+id/profileFragment"
-        android:name="com.example.android2025.ui.home.ProfileFragment"
-        android:label="Profile"
-        tools:layout="@layout/fragment_profile">
-    </fragment>
-
     <!-- User Posts Page -->
     <fragment
         android:id="@+id/userPostsFragment"
@@ -69,6 +64,44 @@
         android:label="My Posts"
         tools:layout="@layout/fragment_user_posts">
     </fragment>
+
+
+    <!-- Profile Page -->
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.android2025.ui.home.ProfileFragment"
+        android:label="Profile"
+        tools:layout="@layout/fragment_profile">
+        <action
+            android:id="@+id/action_profileFragment_to_editProfileFragment"
+            app:destination="@id/editProfileFragment"/>
+    </fragment>
+
+    <!-- Edit Profile Page -->
+    <fragment
+        android:id="@+id/editProfileFragment"
+        android:name="com.example.android2025.ui.userFragments.EditProfileFragment"
+        android:label="Edit Profile"
+        tools:layout="@layout/fragment_edit_profile">
+
+        <argument
+            android:name="firstName"
+            app:argType="string" />
+
+        <argument
+            android:name="lastName"
+            app:argType="string" />
+
+        <argument
+            android:name="username"
+            app:argType="string" />
+
+        <argument
+            android:name="photoUrl"
+            app:argType="string"
+            app:nullable="true" />
+    </fragment>
+
 
     <!-- Weather Page -->
     

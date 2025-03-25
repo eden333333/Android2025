@@ -57,7 +57,7 @@ class HomeFragment : Fragment() {
 
         }
         binding.fabAddPost.setOnClickListener {
-            findNavController().navigate(R.id.createPostFragment)
+            findNavController().navigate(R.id.action_homeFragment_to_createPostFragment)
         }
 
 

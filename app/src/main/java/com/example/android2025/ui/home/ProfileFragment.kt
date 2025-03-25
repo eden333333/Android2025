@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.android2025.R
 import com.example.android2025.databinding.FragmentProfileBinding
@@ -47,9 +48,21 @@ class ProfileFragment : Fragment() {
                 binding.tvEmail.text = it.email
                 binding.tvUsername.text = "@${it.username}"
 
+                binding.ivSettings.setOnClickListener {
+                    user.let {
+                        val action = ProfileFragmentDirections.actionProfileFragmentToEditProfileFragment(
+                            firstName = it.firstName,
+                            lastName = it.lastName,
+                            username = it.username,
+                            photoUrl = it.photoUrl ?: ""
+                        )
+                        findNavController().navigate(action)
+                    }
+                }
 
             }
         }
+
 
     }
 }

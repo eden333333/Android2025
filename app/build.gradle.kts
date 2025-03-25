@@ -4,6 +4,8 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.kapt)
     id("com.google.gms.google-services")
+    id ("androidx.navigation.safeargs.kotlin")
+
 }
 
 android {
