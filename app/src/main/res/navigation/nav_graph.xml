@@ -39,7 +39,7 @@
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.example.android2025.ui.home.HomeFragment"
-        android:label="Home"
+        android:label="Feed"
         tools:layout="@layout/fragment_home">
     </fragment>
 
@@ -62,12 +62,20 @@
         tools:layout="@layout/fragment_profile">
     </fragment>
 
+    <!-- User Posts Page -->
+    <fragment
+        android:id="@+id/userPostsFragment"
+        android:name="com.example.android2025.ui.home.UserPostsFragment"
+        android:label="My Posts"
+        tools:layout="@layout/fragment_user_posts">
+    </fragment>
+
     <!-- Weather Page -->
     
     <fragment
     android:id="@+id/weatherSearchFragment"
     android:name="com.example.android2025.ui.home.WeatherSearchFragment"
-    android:label="Weather Search"
+    android:label="Weather"
     tools:layout="@layout/fragment_weather_search" />
 
 </navigation>

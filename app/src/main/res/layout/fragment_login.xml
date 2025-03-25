@@ -6,9 +6,48 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.auth.LoginFragment">
+    <!-- header layout with app icon and app name -->
+    <FrameLayout
+        android:id="@+id/headerContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="48dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- App Name -->
+
+        <TextView
+            android:id="@+id/tvAppName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:text="WeatherHub"
+            android:textColor="@color/blue"
+            android:textSize="48sp"
+            android:textStyle="bold"
+            tools:ignore="HardcodedText" />
+
+        <ImageView
+
+            android:id="@+id/ivAppIcon"
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:layout_gravity="end|top"
+            android:src="@drawable/ic_weather"
+            android:translationX="-28dp"
+            android:translationY="0dp"
+            tools:ignore="ContentDescription" />
+
+        <!-- Icon Positioned Over 'b' -->
+    </FrameLayout>
+
+
 
     <!-- White Box for Login Form with uniform margin -->
     <androidx.cardview.widget.CardView
+        android:id="@+id/cardLogin"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="32dp"
