@@ -6,23 +6,22 @@
         android:title="Feed"
         android:icon="@drawable/ic_home"
         app:showAsAction="always"/>
-
     <item
-        android:id="@+id/nav_weather"
-        android:title="Weather"
-        android:icon="@drawable/ic_weather"
+        android:id="@+id/nav_user_posts"
+        android:title="My Posts"
+        android:icon="@drawable/ic_user_posts"
         app:showAsAction="always"/>
-
     <item
         android:id="@+id/nav_profile"
         android:title="Profile"
         android:icon="@drawable/ic_profile"
         app:showAsAction="always"/>
     <item
-        android:id="@+id/nav_user_posts"
-        android:title="My Posts"
-        android:icon="@drawable/ic_user_posts"
+        android:id="@+id/nav_weather"
+        android:title="Weather"
+        android:icon="@drawable/ic_weather"
         app:showAsAction="always"/>
+
 
     <item
         android:id="@+id/nav_logout"
