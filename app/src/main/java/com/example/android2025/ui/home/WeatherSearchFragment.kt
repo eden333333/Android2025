@@ -13,6 +13,7 @@ import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.RecyclerView
 import com.example.android2025.data.remote.LocationIQApiService
 import com.example.android2025.data.repository.CityRepository
 import com.example.android2025.data.repository.WeatherRepository
@@ -21,6 +22,7 @@ import com.example.android2025.viewmodel.CityViewModel
 import com.example.android2025.viewmodel.CityViewModelFactory
 import com.example.android2025.viewmodel.WeatherViewModel
 import com.example.android2025.viewmodel.WeatherViewModelFactory
+import com.example.android2025.data.remote.MapillaryApiService
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -30,15 +32,16 @@ import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.snackbar.Snackbar
+import com.squareup.picasso.Picasso
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 
 class WeatherSearchFragment : Fragment(), OnMapReadyCallback {
 
     private lateinit var mapView: MapView
     private var map: GoogleMap? = null
     private var lastLatLng: LatLng? = null
-    private var currentMapType = GoogleMap.MAP_TYPE_NORMAL
     private val locationPermissionCode = 1001
 
     private var _binding: FragmentWeatherSearchBinding? = null
@@ -46,6 +49,9 @@ class WeatherSearchFragment : Fragment(), OnMapReadyCallback {
 
     private lateinit var cityViewModel: CityViewModel
     private lateinit var weatherViewModel: WeatherViewModel
+
+    private val mapillaryApi = MapillaryApiService.create()
+    private val mapillaryToken = "MLY|9996696557049049|fcf315c2f6e4a940d04e6b9ffe1158ef"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -57,11 +63,6 @@ class WeatherSearchFragment : Fragment(), OnMapReadyCallback {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        mapView = binding.mapView
-        mapView.onCreate(savedInstanceState)
-        mapView.getMapAsync(this)
-
         checkLocationPermission()
 
         val cityRepo = CityRepository(LocationIQApiService.create())
@@ -73,47 +74,26 @@ class WeatherSearchFragment : Fragment(), OnMapReadyCallback {
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, ArrayList<String>())
         binding.cityInput.setAdapter(adapter)
 
+        mapView = binding.mapView
+        mapView.onCreate(savedInstanceState)
+        mapView.getMapAsync(this)
+
         binding.cityInput.setOnItemClickListener { parent, _, position, _ ->
             val selected = parent.getItemAtPosition(position).toString()
             val cleanCityString = selected.split(",")[0]
             weatherViewModel.fetchWeather(cleanCityString)
-            Log.d("WeatherSearch", "Selected city from suggestion: $selected")
         }
 
         binding.cityInput.addTextChangedListener {
             val query = it?.toString() ?: return@addTextChangedListener
             lifecycleScope.launch {
                 cityViewModel.fetchCitySuggestions(query)
-                Log.d("WeatherSearch", "User typing: $query")
             }
         }
 
         binding.getWeatherButton.setOnClickListener {
             val city = binding.cityInput.text.toString()
             weatherViewModel.fetchWeather(city)
-            Log.d("WeatherSearch", "Manual button clicked for city: $city")
-        }
-
-        binding.mapTypeButton.setOnClickListener {
-            currentMapType = when (currentMapType) {
-                GoogleMap.MAP_TYPE_NORMAL -> {
-                    binding.mapTypeButton.text = "Map: Satellite"
-                    GoogleMap.MAP_TYPE_SATELLITE
-                }
-                GoogleMap.MAP_TYPE_SATELLITE -> {
-                    binding.mapTypeButton.text = "Map: Terrain"
-                    GoogleMap.MAP_TYPE_TERRAIN
-                }
-                GoogleMap.MAP_TYPE_TERRAIN -> {
-                    binding.mapTypeButton.text = "Map: Hybrid"
-                    GoogleMap.MAP_TYPE_HYBRID
-                }
-                else -> {
-                    binding.mapTypeButton.text = "Map: Normal"
-                    GoogleMap.MAP_TYPE_NORMAL
-                }
-            }
-            map?.mapType = currentMapType
         }
 
         lifecycleScope.launch {
@@ -126,11 +106,11 @@ class WeatherSearchFragment : Fragment(), OnMapReadyCallback {
 
         lifecycleScope.launch {
             weatherViewModel.weather.collectLatest { weather ->
-                Log.d("WeatherSearch", "Flow emitted: $weather")
                 binding.weatherResult.visibility = View.VISIBLE
                 binding.weatherResult.text = if (weather != null) {
                     lastLatLng = LatLng(weather.latitude, weather.longitude)
                     updateMap()
+                    loadMapillaryImage(weather.latitude, weather.longitude)
                     """
                         🌤 City: ${weather.city}
                         🌡 Temperature: ${weather.temperature}°C
@@ -141,10 +121,31 @@ class WeatherSearchFragment : Fragment(), OnMapReadyCallback {
                 }
             }
         }
+
+        binding.mapTypeButton.setOnClickListener {
+            map?.let {
+                it.mapType = when (it.mapType) {
+                    GoogleMap.MAP_TYPE_NORMAL -> GoogleMap.MAP_TYPE_SATELLITE
+                    GoogleMap.MAP_TYPE_SATELLITE -> GoogleMap.MAP_TYPE_TERRAIN
+                    GoogleMap.MAP_TYPE_TERRAIN -> GoogleMap.MAP_TYPE_HYBRID
+                    else -> GoogleMap.MAP_TYPE_NORMAL
+                }
+                binding.mapTypeButton.text = "Map: ${mapTypeLabel(it.mapType)}"
+            }
+        }
+    }
+
+    private fun mapTypeLabel(type: Int): String = when (type) {
+        GoogleMap.MAP_TYPE_NORMAL -> "Normal"
+        GoogleMap.MAP_TYPE_SATELLITE -> "Satellite"
+        GoogleMap.MAP_TYPE_TERRAIN -> "Terrain"
+        GoogleMap.MAP_TYPE_HYBRID -> "Hybrid"
+        else -> "Unknown"
     }
 
     private fun checkLocationPermission() {
-        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+            != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), locationPermissionCode)
         } else {
             enableMyLocation()
@@ -162,7 +163,6 @@ class WeatherSearchFragment : Fragment(), OnMapReadyCallback {
     private fun enableMyLocation() {
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             map?.isMyLocationEnabled = true
-
             val fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
             fusedLocationClient.lastLocation.addOnSuccessListener { location ->
                 location?.let {
@@ -185,9 +185,32 @@ class WeatherSearchFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
+    private fun loadMapillaryImage(lat: Double, lon: Double) {
+    val bbox = "${lon - 0.01},${lat - 0.01},${lon + 0.01},${lat + 0.01}"
+    Log.d("Mapillary", "BBox: $bbox")
+
+    lifecycleScope.launch {
+        try {
+            val response = mapillaryApi.getImagesNearby(mapillaryToken, bbox, limit = 5)
+            val imageUrls = response.data?.mapNotNull { it.thumbUrl } ?: emptyList()
+
+            if (imageUrls.isNotEmpty()) {
+                binding.mapillaryRecycler.visibility = View.VISIBLE
+                binding.mapillaryRecycler.adapter = MapillaryImageAdapter(imageUrls)
+                binding.mapillaryRecycler.layoutManager =
+                    androidx.recyclerview.widget.LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+            } else {
+                binding.mapillaryRecycler.visibility = View.GONE
+                Snackbar.make(binding.root, "No Mapillary images found", Snackbar.LENGTH_SHORT).show()
+            }
+        } catch (e: Exception) {
+            Log.e("Mapillary", "Failed to load images: ${e.localizedMessage}", e)
+        }
+    }
+}
+
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
-        map?.mapType = currentMapType
         updateMap()
     }
 
