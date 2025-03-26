@@ -67,6 +67,11 @@ class MainActivity :  AppCompatActivity() {
         imagePickerLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
             imagePickerCallback?.invoke(uri)
         }
+        authViewModel.logoutComplete.observe(this) { isDone ->
+            if (isDone == true) {
+                navController.navigate(R.id.loginFragment)
+            }
+        }
 
     }
 
@@ -96,10 +101,7 @@ class MainActivity :  AppCompatActivity() {
                 return true
             }
             R.id.nav_logout -> {
-                // Trigger logout in ViewModel
                 authViewModel.logout()
-                // Navigate back to LoginFragment after logout
-                navController.navigate(R.id.loginFragment)
                 return true
             }
 

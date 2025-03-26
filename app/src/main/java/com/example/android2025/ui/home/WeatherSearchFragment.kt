@@ -195,7 +195,6 @@ class WeatherSearchFragment : Fragment(), OnMapReadyCallback {
             val imageUrls = response.data?.mapNotNull { it.thumbUrl } ?: emptyList()
 
             if (imageUrls.isNotEmpty()) {
-                binding.mapillaryLabel.text = "Latest Mapillary images around $cityName"
                 binding.mapillaryRecycler.visibility = View.VISIBLE
                 binding.mapillaryRecycler.adapter = MapillaryImageAdapter(imageUrls)
                 binding.mapillaryRecycler.layoutManager =

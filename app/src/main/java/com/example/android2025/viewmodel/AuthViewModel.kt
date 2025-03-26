@@ -18,6 +18,9 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
 
     val user: LiveData<UserEntity?> = repository.getUser()
 
+    private val _logoutComplete = MutableLiveData<Boolean>()
+    val logoutComplete: LiveData<Boolean> = _logoutComplete
+
     private val _errorRegister = MutableLiveData<String>()
     val errorRegister: LiveData<String> = _errorRegister
 
@@ -65,6 +68,8 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     fun logout() {
         viewModelScope.launch {
             repository.logout()
+            _logoutComplete.value = true
+
         }
 
     }

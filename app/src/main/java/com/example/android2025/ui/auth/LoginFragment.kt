@@ -33,6 +33,7 @@ class LoginFragment : Fragment() {
 
         // Handle Login button click
         binding.btnLogin.setOnClickListener {
+            binding.tvError.text = ""
             val email = binding.etEmail.text.toString()
             val password = binding.etPassword.text.toString()
             // Validate input fields

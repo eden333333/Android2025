@@ -36,12 +36,7 @@ class HomeFragment : Fragment() {
         // recyclerView setup with a LinearLayoutManager and A PostAdapter
 
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        postAdapter = PostAdapter(emptyList()){postId ->
-            run {
-                val bundle = Bundle().apply { putString("postId", postId) }
-                findNavController().navigate(R.id.viewPostFragment, bundle)
-            }
-        }
+        postAdapter = PostAdapter(emptyList())
         binding.recyclerView.adapter = postAdapter
 
         // observing the posts LiveData and updating the adapter when posts change
@@ -61,12 +56,22 @@ class HomeFragment : Fragment() {
             })
 
         }
+
+        postViewModel.errorLoadingPosts.observe(viewLifecycleOwner) { errorMsg  ->
+            if (!errorMsg.isNullOrEmpty()) {
+                binding.tvError.text = errorMsg
+                binding.tvError.visibility = View.VISIBLE
+            } else {
+                binding.tvError.visibility = View.GONE
+            }
+        }
+
+        // setting FloatingActionButton listener to upload a new post
         binding.fabAddPost.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_createPostFragment)
         }
 
 
-        // setting FloatingActionButton listener to upload a new post
 
 
     }

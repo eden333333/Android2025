@@ -27,7 +27,7 @@ class PostRepository(private val context: Context, private val postDao: PostDao)
      fun getPosts(): LiveData<List<PostEntity>> = postDao.getPosts()
 
     // loads posts from Firestore and update Room
-    suspend fun loadPosts() {
+    suspend fun loadPosts(): Result<List<PostEntity>> {
         try {
             val snapshot = firestore.collection("posts")
                 .orderBy("timestamp", Query.Direction.DESCENDING)
@@ -52,8 +52,9 @@ class PostRepository(private val context: Context, private val postDao: PostDao)
             withContext(Dispatchers.IO) {
                 postDao.insertPosts(posts)
             }
+            return Result.success(posts)
         } catch (e: Exception) {
-            // Log or handle the error as needed
+            return Result.failure(e)
         }
     }
 
@@ -71,7 +72,7 @@ class PostRepository(private val context: Context, private val postDao: PostDao)
     }
 
     // Upload a new post to Firestore and update Room locally.
-    suspend fun uploadPost(post: Post): Result<Void?> {
+    suspend fun uploadPost(post: Post): Result<PostEntity> {
          try {
             firestore.collection("posts").document(post.postId).set(post.toMap()).await()
             //  update local cache
@@ -87,13 +88,13 @@ class PostRepository(private val context: Context, private val postDao: PostDao)
             withContext(Dispatchers.IO) {
                 postDao.insertPosts(listOf(postEntity))
             }
-            return Result.success(null)
+            return Result.success(postEntity)
         } catch (e: Exception) {
             return Result.failure(e)
         }
     }
 
-    // Update the username and profile image
+    // Update the username and profile image of all posts in Firestore and Room
     suspend fun updatePostUsernameAndProfile(username: String, oldUsername: String, profileImageUrl: String?) {
         // update Firestore
         firestore.collection("posts")
@@ -114,17 +115,19 @@ class PostRepository(private val context: Context, private val postDao: PostDao)
             postDao.updatePostUsernameAndProfile(username, oldUsername, profileImageUrl )
         }
     }
-
-    suspend fun uploadImageToCloudinary(imageUri: Uri): String? {
-        return try {
+    // Upload an image to Cloudinary and return the URL
+    suspend fun uploadImageToCloudinary(imageUri: Uri): Result<String?> {
+        try {
+            var url: String? = null
             context.contentResolver.openInputStream(imageUri)?.use { inputStream ->
                 val uploadResult = withContext(Dispatchers.IO) {
                     cloudinary.uploader().upload(inputStream, mapOf("folder" to "post_images"))
                 }
-                uploadResult["secure_url"] as? String
+                url = uploadResult["secure_url"] as String
             }
+            return Result.success(url)
         } catch (e: Exception) {
-            null
+            return Result.failure(e)
         }
     }
 }

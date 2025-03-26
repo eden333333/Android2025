@@ -47,25 +47,34 @@ class CreatePostFragment : Fragment() {
 
         // set click listener for the upload button
         binding.btnUploadPost.setOnClickListener {
+            binding.tvPostError.text = ""
             val content = binding.etPostContent.text.toString().trim()
             if (content.isEmpty()) {
                 binding.tvPostError.visibility = View.VISIBLE
                 binding.tvPostError.text = "Please enter some content for your post."
+                return@setOnClickListener
             } else {
                 binding.tvPostError.visibility = View.GONE
 
                 // retrieve current user details from AuthViewModel
                 val currentUser = authViewModel.user.value
-                if (currentUser != null) {
+                currentUser?.let {
                     postViewModel.createPost(
                         content = content,
                         imageUri = selectedImageUri,
                         currentUser = currentUser
                     )
                 }
-
                 // navigate back to the HomeFragment after upload.
                 findNavController().navigateUp()
+            }
+        }
+        postViewModel.errorUploadPost.observe(viewLifecycleOwner) { errorMsg ->
+            if (errorMsg.isNullOrEmpty()) {
+                binding.tvPostError.visibility = View.GONE
+            } else {
+                binding.tvPostError.text = errorMsg
+                binding.tvPostError.visibility = View.VISIBLE
             }
         }
 
