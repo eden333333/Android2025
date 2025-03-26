@@ -19,6 +19,9 @@ import com.example.android2025.databinding.FragmentCreatePostBinding
 import com.example.android2025.databinding.FragmentViewPostBinding
 import com.example.android2025.viewmodel.PostViewModel
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -54,6 +57,10 @@ class ViewPostFragment : Fragment() {
         val btnEdit : Button = binding.btnEditPost
         val btnDelete : Button = binding.btnDelete
 
+        val sdf = SimpleDateFormat("d 'of' MMM 'at' HH:mm", Locale.getDefault())
+
+        //holder.tvTime.text = formattedTime
+
         val postId = arguments?.getString("postId")
 
         if(postId != null){
@@ -62,6 +69,8 @@ class ViewPostFragment : Fragment() {
                 if(post != null){
                     tvUsername.text = post.username
                     tvContent.text = post.content
+                    val formattedTime = sdf.format(Date(post.timestamp))
+                    //TODO ad timestamp
                     if (!post.photoUrl.isNullOrEmpty()) {
                         ivImage.visibility = View.VISIBLE
                         Glide.with(view.context)
