@@ -54,8 +54,6 @@
             android:visibility="gone"
             android:orientation="horizontal"
         />
-
-
     
         <com.google.android.gms.maps.MapView
             android:id="@+id/mapView"
