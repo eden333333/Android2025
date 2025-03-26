@@ -12,7 +12,9 @@ import kotlinx.coroutines.launch
 
 class AuthViewModel(application: Application) : AndroidViewModel(application) {
     private val userDao = AppDatabase.getDatabase(application).userDao()
-    private val repository = AuthRepository(application,userDao)
+    private val postDao = AppDatabase.getDatabase(application).postDao()
+    private val repository = AuthRepository(application,userDao,postDao)
+
 
     val user: LiveData<UserEntity?> = repository.getUser()
 
@@ -57,7 +59,6 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                 Log.d("AuthViewModel", "Login successful: ${it.uid}")
             }.onFailure {
                 _errorLogin.value = it.message
-
             }
         }
     }

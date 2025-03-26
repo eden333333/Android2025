@@ -26,8 +26,8 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     // LiveData from the local Room database
     val posts: LiveData<List<PostEntity>> = repository.getPosts()
 
-    init {
-        // loads posts from Firestore when the ViewModel is created.
+    
+    fun refreshPosts() {
         viewModelScope.launch {
             repository.loadPosts()
         }

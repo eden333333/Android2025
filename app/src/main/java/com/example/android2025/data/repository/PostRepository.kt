@@ -50,7 +50,6 @@ class PostRepository(private val context: Context, private val postDao: PostDao)
             }
             // update local cache (room)
             withContext(Dispatchers.IO) {
-                postDao.clearPosts()
                 postDao.insertPosts(posts)
             }
         } catch (e: Exception) {
@@ -83,6 +82,21 @@ class PostRepository(private val context: Context, private val postDao: PostDao)
 
     // Update the username and profile image
     suspend fun updatePostUsernameAndProfile(username: String, oldUsername: String, profileImageUrl: String?) {
+        // update Firestore
+        firestore.collection("posts")
+            .whereEqualTo("username", oldUsername)
+            .get()
+            .await()
+            .documents
+            .forEach { doc ->
+                doc.reference.update(
+                    mapOf(
+                        "username" to username,
+                        "profileImageUrl" to profileImageUrl
+                    )
+                )
+            }
+        // update Room
         withContext(Dispatchers.IO) {
             postDao.updatePostUsernameAndProfile(username, oldUsername, profileImageUrl )
         }

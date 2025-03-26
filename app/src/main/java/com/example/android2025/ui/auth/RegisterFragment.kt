@@ -14,12 +14,15 @@ import androidx.navigation.fragment.findNavController
 import com.example.android2025.MainActivity
 import com.example.android2025.R
 import com.example.android2025.databinding.FragmentRegisterBinding
+import com.example.android2025.viewmodel.PostViewModel
 
 
 class RegisterFragment : Fragment() {
 
     private lateinit var binding: FragmentRegisterBinding
     private lateinit var authViewModel: AuthViewModel
+    private lateinit var postViewModel: PostViewModel
+
     private var imageUri: Uri? = null
 
 
@@ -32,9 +35,6 @@ class RegisterFragment : Fragment() {
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         authViewModel = ViewModelProvider(requireActivity())[AuthViewModel::class.java]
-
-
-
 
 
         // Open gallery when image is clicked and set the image to the ImageView
@@ -92,6 +92,8 @@ class RegisterFragment : Fragment() {
         authViewModel.user.observe(viewLifecycleOwner) { user ->
             user?.let {
                 findNavController().navigate(R.id.action_registerFragment_to_homeFragment)
+                postViewModel.refreshPosts()
+
             }
         }
         // Handle Sign In navigation
