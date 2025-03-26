@@ -1,23 +1,27 @@
 package com.example.android2025.ui.adapters
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.android2025.R
 import com.example.android2025.data.model.Post
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
-class PostAdapter(private var posts: List<Post>, private val onViewPost:(String) -> Unit) : RecyclerView.Adapter<PostAdapter.PostViewHolder>() {
+class PostAdapter(private var posts: List<Post>) : RecyclerView.Adapter<PostAdapter.PostViewHolder>() {
 
     inner class PostViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val tvUsername: TextView = itemView.findViewById(R.id.tvUsername)
         val ivProfile: ImageView = itemView.findViewById(R.id.ivProfile)
         val tvContent: TextView = itemView.findViewById(R.id.tvContent)
         val ivImage: ImageView = itemView.findViewById(R.id.ivImage)
+        val tvTime: TextView = itemView.findViewById(R.id.tvTime)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
@@ -25,6 +29,7 @@ class PostAdapter(private var posts: List<Post>, private val onViewPost:(String)
         return PostViewHolder(view)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
         val post = posts[position]
         holder.tvUsername.text = post.username
@@ -47,9 +52,12 @@ class PostAdapter(private var posts: List<Post>, private val onViewPost:(String)
         } else {
             holder.ivImage.visibility = View.GONE
         }
-        holder.itemView.setOnClickListener{
-            onViewPost(post.postId)
-        }
+        // Bind post time
+        // Format timestamp
+        val sdf = SimpleDateFormat("d 'of' MMM 'at' HH:mm", Locale.getDefault())
+        val formattedTime = sdf.format(Date(post.timestamp))
+        holder.tvTime.text = formattedTime
+
     }
 
     override fun getItemCount(): Int = posts.size

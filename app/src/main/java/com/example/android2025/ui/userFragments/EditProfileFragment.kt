@@ -1,4 +1,4 @@
-package com.example.android2025.ui.auth
+package com.example.android2025.ui.userFragments
 
 import AuthViewModel
 import android.net.Uri
@@ -7,36 +7,47 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
+import com.bumptech.glide.Glide
 import com.example.android2025.MainActivity
-import com.example.android2025.R
-import com.example.android2025.databinding.FragmentRegisterBinding
+import com.example.android2025.databinding.FragmentEditProfileBinding
 import com.example.android2025.viewmodel.PostViewModel
 
+class EditProfileFragment : Fragment() {
 
-class RegisterFragment : Fragment() {
-
-    private lateinit var binding: FragmentRegisterBinding
+    private lateinit var binding: FragmentEditProfileBinding
     private lateinit var authViewModel: AuthViewModel
     private lateinit var postViewModel: PostViewModel
-
     private var imageUri: Uri? = null
 
+    private val args: EditProfileFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentRegisterBinding.inflate(inflater, container, false)
+        binding = FragmentEditProfileBinding.inflate(inflater, container, false)
         return binding.root
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         authViewModel = ViewModelProvider(requireActivity())[AuthViewModel::class.java]
         postViewModel = ViewModelProvider(requireActivity())[PostViewModel::class.java]
 
+        // fill in the form with the user's current information
+
+        // initial form values from SafeArgs
+
+        binding.etUsername.setText(args.username)
+        binding.etFirstName.setText(args.firstName)
+        binding.etLastName.setText(args.lastName)
+        Glide.with(this) // Load profile photo from args
+            .load(args.photoUrl)
+            .placeholder(com.example.android2025.R.drawable.ic_default_profile)
+            .into(binding.ivProfileImage)
 
         // Open gallery when image is clicked and set the image to the ImageView
         binding.ivProfileImage.setOnClickListener {
@@ -47,41 +58,37 @@ class RegisterFragment : Fragment() {
                 }
             }
         }
-        binding.btnSignUp.setOnClickListener {
+        binding.btnSave.setOnClickListener {
             // Clear error message
             binding.tvError.text = ""
 
-            val email = binding.etEmail.text.toString()
-            val password = binding.etPassword.text.toString()
             val username = binding.etUsername.text.toString()
             val firstName = binding.etFirstName.text.toString()
             val lastName = binding.etLastName.text.toString()
 
             // Validate input fields
             when {
-                email.isEmpty() || password.isEmpty() || username.isEmpty() || firstName.isEmpty() || lastName.isEmpty() -> {
+                username.isEmpty() || firstName.isEmpty() || lastName.isEmpty() -> {
                     binding.tvError.text = "Please fill in all fields."
                     binding.tvError.visibility = View.VISIBLE
                     return@setOnClickListener
                 }
-                !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches() -> {
-                    binding.tvError.text = "Please enter a valid email address."
-                    binding.tvError.visibility = View.VISIBLE
-                    return@setOnClickListener
-                }
-                password.length < 6 -> {
-                    binding.tvError.text = "Password must be at least 6 characters."
-                    binding.tvError.visibility = View.VISIBLE
-                    return@setOnClickListener
-                }
+
                 else -> {
                     binding.tvError.visibility = View.GONE
                 }
             }
-            authViewModel.register(email, password, username, firstName, lastName, imageUri)
+            authViewModel.updateUser(username, firstName, lastName, imageUri, args.photoUrl) { newPhotoUrl ->
+                postViewModel.updatePostUsernameAndProfile(
+                    username,
+                    args.username,
+                    newPhotoUrl ?: args.photoUrl
+                )
+            }
+            findNavController().navigateUp()
         }
         // Observe error messages and display them
-        authViewModel.errorRegister.observe(viewLifecycleOwner) { errorMsg ->
+        authViewModel.errorUpdateUser.observe(viewLifecycleOwner) { errorMsg ->
             if (errorMsg.isNullOrEmpty()) {
                 binding.tvError.visibility = View.GONE
             } else {
@@ -89,20 +96,13 @@ class RegisterFragment : Fragment() {
                 binding.tvError.visibility = View.VISIBLE
             }
         }
-        // Observe user signup status and navigate to HomeFragment on success
-        authViewModel.user.observe(viewLifecycleOwner) { user ->
-            user?.let {
-                findNavController().navigate(R.id.action_registerFragment_to_homeFragment)
-                postViewModel.refreshPosts()
-
-            }
+        // Navigate back to ProfileFragment
+        binding.tvCancelPost.setOnClickListener {
+            findNavController().navigateUp()
         }
-        // Handle Sign In navigation
-        binding.tvLogin.setOnClickListener {
-            findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
-        }
-
-
-
     }
 }
+
+
+
+

@@ -12,7 +12,6 @@ import com.example.android2025.data.model.Post
 import com.example.android2025.data.repository.PostRepository
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import java.util.UUID
 
 
@@ -27,8 +26,8 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     // LiveData from the local Room database
     val posts: LiveData<List<PostEntity>> = repository.getPosts()
 
-    init {
-        // loads posts from Firestore when the ViewModel is created.
+    
+    fun refreshPosts() {
         viewModelScope.launch {
             repository.loadPosts()
         }
@@ -57,8 +56,12 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
     }
-    fun getPostById(postId: String): Post?{
-        return runBlocking { repository.getPostById(postId) }
+    fun updatePostUsernameAndProfile(username: String, oldUsername: String,profileImageUrl: String?) {
+        viewModelScope.launch {
+            repository.updatePostUsernameAndProfile(username, oldUsername,profileImageUrl)
+
+        }
     }
+
 }
 

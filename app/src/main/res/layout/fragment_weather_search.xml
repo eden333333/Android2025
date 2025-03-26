@@ -34,23 +34,39 @@
             android:text="Get Weather"
             android:layout_marginBottom="24dp" />
 
-        <!-- Result Area -->
-       <TextView
-    android:id="@+id/weatherResult"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:textSize="18sp"
-    android:textColor="#000000"
-    android:background="#E0F7FA"
-    android:padding="16dp"
-    android:layout_marginTop="24dp"
-    android:visibility="gone" />
+            <!-- Result Area -->
+        <TextView
+            android:id="@+id/weatherResult"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textColor="#000000"
+            android:background="#E0F7FA"
+            android:padding="16dp"
+            android:layout_marginTop="24dp"
+            android:visibility="gone" />
 
-    <com.google.android.gms.maps.MapView
-    android:id="@+id/mapView"
-    android:layout_width="match_parent"
-    android:layout_height="200dp"
-    android:layout_marginTop="24dp"/>
+    
+        <com.google.android.gms.maps.MapView
+            android:id="@+id/mapView"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginTop="24dp"/>
+
+        <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal">
+
+            <Button
+                android:id="@+id/mapTypeButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                android:text="Map: Normal" />
+        </LinearLayout>
 
 
     </LinearLayout>

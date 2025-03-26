@@ -5,6 +5,7 @@ import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
 import com.cloudinary.Cloudinary
+import com.example.android2025.data.local.PostDao
 import com.example.android2025.data.local.UserDao
 import com.example.android2025.data.local.UserEntity
 import com.google.firebase.auth.FirebaseAuth
@@ -17,7 +18,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
-class AuthRepository(private val context: Context, private val userDao: UserDao) {
+class AuthRepository(private val context: Context, private val userDao: UserDao, private val postDao: PostDao ?= null) {
 
     private val firebaseAuth = FirebaseAuth.getInstance()
     private val firestore = FirebaseFirestore.getInstance()
@@ -28,6 +29,38 @@ class AuthRepository(private val context: Context, private val userDao: UserDao)
             "api_secret" to "K5iU9t1dT2YxLGkzmQrt3ZilQgw"
         )
     )
+    fun getUser(): LiveData<UserEntity?> = userDao.getUser()
+    suspend fun updateUser(username: String, firstName: String, lastName: String, photoUrl: String?): Result<UserEntity> {
+        try {
+            // Update user in Firestore
+            val user = firebaseAuth.currentUser ?: throw Exception("User not found")
+            val data = mapOf(
+                "username" to username,
+                "firstName" to firstName,
+                "lastName" to lastName,
+                "photoUrl" to photoUrl
+            )
+            firestore.collection("users")
+                .document(user.uid)
+                .update(data)
+                .await()
+            val updatedUser = UserEntity(
+                uid = user.uid,
+                email = user.email ?: "",
+                username = username,
+                firstName = firstName,
+                lastName = lastName,
+                photoUrl = photoUrl
+            )
+            // Update user in Room Database (local)
+            withContext(Dispatchers.IO) {
+                userDao.insertUser(updatedUser)
+            }
+            return Result.success(updatedUser)
+        } catch (e: Exception) {
+            return Result.failure(e)
+        }
+    }
     // Sign Up Function
     suspend fun register(
         email: String,
@@ -119,11 +152,15 @@ class AuthRepository(private val context: Context, private val userDao: UserDao)
 
     // Logout Function
     suspend fun logout() {
-        firebaseAuth.signOut()
         withContext(Dispatchers.IO) {
             userDao.clearUsers()
+            postDao!!.clearPosts()
         }
+        firebaseAuth.signOut()
     }
+
+
+
 
     // Helper function to convert UserEntity to Map
     private fun UserEntity.toMap(): Map<String, Any?> = mapOf(

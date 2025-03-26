@@ -4,6 +4,8 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.kapt)
     id("com.google.gms.google-services")
+    id ("androidx.navigation.safeargs.kotlin")
+
 }
 
 android {
@@ -62,7 +64,11 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    // Lottie
+    implementation ("com.airbnb.android:lottie:5.2.0")
 
+    //splash screen
+    implementation ("androidx.core:core-splashscreen:1.0.0")
     // Firebase
     implementation ("com.google.firebase:firebase-auth-ktx")
     implementation ("com.google.firebase:firebase-firestore-ktx")
@@ -101,4 +107,7 @@ dependencies {
     implementation("com.google.code.gson:gson:2.10.1")
     //Google Maps
     implementation("com.google.android.gms:play-services-maps:18.2.0")
+
+    implementation("com.google.android.gms:play-services-location:21.0.1")
+
 }

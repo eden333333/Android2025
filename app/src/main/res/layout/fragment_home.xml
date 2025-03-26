@@ -28,7 +28,10 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.954"
-        app:layout_constraintStart_toStartOf="parent" />  <!-- Ensure you have a plus icon resource -->
+        app:layout_constraintStart_toStartOf="parent"
+        app:backgroundTint="@color/blue"
+        app:tint="@color/white"
+        />  <!-- Ensure you have a plus icon resource -->
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

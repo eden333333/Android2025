@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 
 class MainActivity :  AppCompatActivity() {
 
@@ -23,9 +24,8 @@ class MainActivity :  AppCompatActivity() {
     private lateinit var imagePickerLauncher: ActivityResultLauncher<String>
     private var imagePickerCallback: ((Uri?) -> Unit)? = null
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
@@ -91,6 +91,10 @@ class MainActivity :  AppCompatActivity() {
                 navController.navigate(R.id.profileFragment)
                 return true
             }
+            R.id.nav_user_posts -> {
+                navController.navigate(R.id.userPostsFragment)
+                return true
+            }
             R.id.nav_logout -> {
                 // Trigger logout in ViewModel
                 authViewModel.logout()
@@ -98,6 +102,7 @@ class MainActivity :  AppCompatActivity() {
                 navController.navigate(R.id.loginFragment)
                 return true
             }
+
         }
         return super.onOptionsItemSelected(item)
     }

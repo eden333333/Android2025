@@ -16,6 +16,10 @@ interface PostDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPosts(posts: List<PostEntity>)
 
+    @Query("UPDATE posts SET username = :username, profileImageUrl = :profileImageUrl WHERE username = :oldUsername")
+    suspend fun updatePostUsernameAndProfile(username: String, oldUsername: String, profileImageUrl: String?)
+
+
     @Query("DELETE FROM posts")
     suspend fun clearPosts()
 }

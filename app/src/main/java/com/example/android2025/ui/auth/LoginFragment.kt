@@ -10,12 +10,14 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.android2025.R
 import com.example.android2025.databinding.FragmentLoginBinding
+import com.example.android2025.viewmodel.PostViewModel
 
 
 class LoginFragment : Fragment() {
 
     private lateinit var binding: FragmentLoginBinding
     private lateinit var authViewModel: AuthViewModel
+    private lateinit var postViewModel: PostViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -26,6 +28,7 @@ class LoginFragment : Fragment() {
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         authViewModel = ViewModelProvider(requireActivity())[AuthViewModel::class.java]
+        postViewModel = ViewModelProvider(requireActivity())[PostViewModel::class.java]
 
 
         // Handle Login button click
@@ -50,17 +53,6 @@ class LoginFragment : Fragment() {
             }
             authViewModel.login(email, password)
         }
-        // Handle Sign Up navigation
-        binding.tvSignUp.setOnClickListener {
-            findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
-        }
-
-        // Observe user login status and navigate to HomeFragment on success
-        authViewModel.user.observe(viewLifecycleOwner) { user ->
-            user?.let {
-                findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
-            }
-        }
         // Observe error messages and display them
         authViewModel.errorLogin.observe(viewLifecycleOwner) { errorMsg ->
             if (errorMsg.isNullOrEmpty()) {
@@ -69,6 +61,21 @@ class LoginFragment : Fragment() {
                 binding.tvError.text = errorMsg
                 binding.tvError.visibility = View.VISIBLE
             }
+        }
+
+
+        // Observe user login status and navigate to HomeFragment on success
+        authViewModel.user.observe(viewLifecycleOwner) { user ->
+            user?.let {
+                findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
+                postViewModel.refreshPosts()
+
+            }
+        }
+
+        // Handle Sign Up navigation
+        binding.tvSignUp.setOnClickListener {
+            findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
         }
 
 

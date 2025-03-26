@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/light_gray"
-    tools:context=".ui.post.CreatePostFragment">
+    tools:context=".ui.userFragments.EditProfileFragment">
 
-    <!-- CardView Container for the Create Post Form -->
+    <!-- CardView for Edit Profile Form -->
     <androidx.cardview.widget.CardView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -26,36 +27,56 @@
             android:orientation="vertical"
             android:padding="24dp">
 
-            <!-- Create Post Title -->
+            <!-- Edit Profile Title -->
             <TextView
-                android:id="@+id/tvCreatePostTitle"
+                android:id="@+id/tvEditProfileTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="16dp"
-                android:text="Add Post"
+                android:text="Edit Profile"
                 android:textColor="@android:color/black"
                 android:textSize="24sp"
                 android:textStyle="bold" />
 
-            <!-- Post Content Input -->
+            <!-- Username Input -->
             <EditText
-                android:id="@+id/etPostContent"
+                android:id="@+id/etUsername"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="55dp"
                 android:layout_marginBottom="16dp"
                 android:background="@drawable/edittext_background"
-                android:hint="Let others know what's up with your sky!"
+                android:hint="Username"
                 android:padding="14dp"
-                android:inputType="textMultiLine"
-                android:gravity="center"
-                android:scrollbars="vertical" />
+                android:inputType="text" />
 
-            <!-- Image Selection -->
+            <!-- First Name Input -->
+            <EditText
+                android:id="@+id/etFirstName"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/edittext_background"
+                android:hint="First Name"
+                android:inputType="textPersonName"
+                android:padding="14dp" />
+
+            <!-- Last Name Input -->
+            <EditText
+                android:id="@+id/etLastName"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/edittext_background"
+                android:hint="Last Name"
+                android:inputType="textPersonName"
+                android:padding="14dp" />
+
+            <!-- Profile Picture Preview -->
             <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/ivPostImage"
-                android:layout_width="120dp"
-                android:layout_height="120dp"
+                android:id="@+id/ivProfileImage"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="16dp"
                 android:background="@color/light_gray"
@@ -65,9 +86,9 @@
                 android:src="@drawable/ic_add_photo"
                 app:shapeAppearanceOverlay="@style/CircleImageView" />
 
-            <!-- Error Message -->
+            <!-- Error TextView -->
             <TextView
-                android:id="@+id/tvPostError"
+                android:id="@+id/tvError"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
@@ -77,17 +98,16 @@
                 android:text=""
                 android:textAlignment="center" />
 
-            <!-- Upload Post Button -->
+            <!-- Save Changes Button -->
             <Button
-                android:id="@+id/btnUploadPost"
+                android:id="@+id/btnSave"
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="8dp"
                 android:backgroundTint="@color/blue"
-                android:text="Upload Post"
+                android:text="Save Changes"
                 android:textColor="@android:color/white"
                 android:textStyle="bold" />
-
             <!-- Cancel Option -->
             <TextView
                 android:id="@+id/tvCancelPost"
@@ -98,6 +118,8 @@
                 android:textColor="@color/blue"
                 android:textSize="16sp"
                 android:textStyle="bold" />
+
         </LinearLayout>
     </androidx.cardview.widget.CardView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

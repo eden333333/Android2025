@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.android2025.R
 import com.example.android2025.databinding.FragmentProfileBinding
@@ -40,16 +41,29 @@ class ProfileFragment : Fragment() {
                     .error(R.drawable.ic_default_profile)
                     .into(binding.ivProfileImage)
 
-                binding.tvTitle.text = "Welcome, ${it.firstName}!"
+                binding.tvTitle.text = "User Info"
 
                 // Update other user details
                 binding.tvFullName.text = "${it.firstName} ${it.lastName}"
                 binding.tvEmail.text = it.email
                 binding.tvUsername.text = "@${it.username}"
 
+                binding.ivSettings.setOnClickListener {
+                    user.let {
+                        val action = ProfileFragmentDirections.actionProfileFragmentToEditProfileFragment(
+                            uid = it.uid,
+                            firstName = it.firstName,
+                            lastName = it.lastName,
+                            username = it.username,
+                            photoUrl = it.photoUrl ?: ""
+                        )
+                        findNavController().navigate(action)
+                    }
+                }
 
             }
         }
+
 
     }
 }
