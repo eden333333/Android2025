@@ -110,7 +110,7 @@ class WeatherSearchFragment : Fragment(), OnMapReadyCallback {
                 binding.weatherResult.text = if (weather != null) {
                     lastLatLng = LatLng(weather.latitude, weather.longitude)
                     updateMap()
-                    loadMapillaryImage(weather.latitude, weather.longitude, weather.city)
+                    loadMapillaryImage(weather.latitude, weather.longitude)
                     """
                         🌤 City: ${weather.city}
                         🌡 Temperature: ${weather.temperature}°C
@@ -185,17 +185,16 @@ class WeatherSearchFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
-    private fun loadMapillaryImage(lat: Double, lon: Double, cityName: String) {
+    private fun loadMapillaryImage(lat: Double, lon: Double) {
     val bbox = "${lon - 0.01},${lat - 0.01},${lon + 0.01},${lat + 0.01}"
     Log.d("Mapillary", "BBox: $bbox")
 
     lifecycleScope.launch {
         try {
-            val response = mapillaryApi.getImagesNearby(mapillaryToken, bbox, limit = 5)
+            val response = mapillaryApi.getImagesNearby(mapillaryToken, bbox, limit = 10)
             val imageUrls = response.data?.mapNotNull { it.thumbUrl } ?: emptyList()
 
             if (imageUrls.isNotEmpty()) {
-                binding.mapillaryLabel.text = "Latest Mapillary images around $cityName"
                 binding.mapillaryRecycler.visibility = View.VISIBLE
                 binding.mapillaryRecycler.adapter = MapillaryImageAdapter(imageUrls)
                 binding.mapillaryRecycler.layoutManager =
