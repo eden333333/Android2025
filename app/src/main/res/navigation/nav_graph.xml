@@ -85,6 +85,10 @@
         tools:layout="@layout/fragment_edit_profile">
 
         <argument
+            android:name="uid"
+            app:argType="string" />
+
+        <argument
             android:name="firstName"
             app:argType="string" />
 

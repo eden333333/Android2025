@@ -35,8 +35,7 @@ class RegisterFragment : Fragment() {
 
 
 
-        // Clear error message
-        binding.tvError.text = ""
+
 
         // Open gallery when image is clicked and set the image to the ImageView
         binding.ivProfileImage.setOnClickListener {
@@ -48,7 +47,8 @@ class RegisterFragment : Fragment() {
             }
         }
         binding.btnSignUp.setOnClickListener {
-            Log.d("RegisterFragment", "Sign Up button clicked")
+            // Clear error message
+            binding.tvError.text = ""
 
             val email = binding.etEmail.text.toString()
             val password = binding.etPassword.text.toString()

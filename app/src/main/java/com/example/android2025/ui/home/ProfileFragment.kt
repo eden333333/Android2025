@@ -41,7 +41,7 @@ class ProfileFragment : Fragment() {
                     .error(R.drawable.ic_default_profile)
                     .into(binding.ivProfileImage)
 
-                binding.tvTitle.text = "Welcome, ${it.firstName}!"
+                binding.tvTitle.text = "User Info"
 
                 // Update other user details
                 binding.tvFullName.text = "${it.firstName} ${it.lastName}"
@@ -51,6 +51,7 @@ class ProfileFragment : Fragment() {
                 binding.ivSettings.setOnClickListener {
                     user.let {
                         val action = ProfileFragmentDirections.actionProfileFragmentToEditProfileFragment(
+                            uid = it.uid,
                             firstName = it.firstName,
                             lastName = it.lastName,
                             username = it.username,

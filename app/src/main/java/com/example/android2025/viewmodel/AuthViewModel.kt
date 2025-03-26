@@ -22,6 +22,9 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     private val _errorLogin = MutableLiveData<String>()
     val errorLogin: LiveData<String> = _errorLogin
 
+    private val _errorUpdateUser = MutableLiveData<String>()
+    val errorUpdateUser: LiveData<String> = _errorUpdateUser
+
     // Registration function
     fun register(
         email: String,
@@ -64,4 +67,28 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         }
 
     }
+    fun updateUser(
+        username: String,
+        firstName: String,
+        lastName: String,
+        imageUri: Uri?,
+        currentPhotoUrl: String?,
+        onSuccess: (String?) -> Unit = {}
+    ) {
+        viewModelScope.launch {
+            val photoUrl = if (imageUri != null) {
+                repository.uploadImageToCloudinary(imageUri)
+            } else {
+                currentPhotoUrl            }
+            val result = repository.updateUser(username, firstName, lastName, photoUrl)
+            result.onSuccess {
+                Log.d("AuthViewModel", "User updated successfully")
+                onSuccess(photoUrl)
+            }.onFailure {
+                _errorUpdateUser.value = it.message
+                Log.e("AuthViewModel", "User update failed: ${it.message}")
+            }
+        }
+    }
 }
+

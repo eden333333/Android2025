@@ -81,6 +81,13 @@ class PostRepository(private val context: Context, private val postDao: PostDao)
         }
     }
 
+    // Update the username and profile image
+    suspend fun updatePostUsernameAndProfile(username: String, oldUsername: String, profileImageUrl: String?) {
+        withContext(Dispatchers.IO) {
+            postDao.updatePostUsernameAndProfile(username, oldUsername, profileImageUrl )
+        }
+    }
+
     suspend fun uploadImageToCloudinary(imageUri: Uri): String? {
         return try {
             context.contentResolver.openInputStream(imageUri)?.use { inputStream ->

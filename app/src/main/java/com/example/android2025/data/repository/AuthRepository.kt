@@ -29,6 +29,35 @@ class AuthRepository(private val context: Context, private val userDao: UserDao)
         )
     )
     fun getUser(): LiveData<UserEntity?> = userDao.getUser()
+    suspend fun updateUser(username: String, firstName: String, lastName: String, photoUrl: String?): Result<UserEntity> {
+        try {
+            val user = firebaseAuth.currentUser ?: throw Exception("User not found")
+            val data = mapOf(
+                "username" to username,
+                "firstName" to firstName,
+                "lastName" to lastName,
+                "photoUrl" to photoUrl
+            )
+            firestore.collection("users")
+                .document(user.uid)
+                .update(data)
+                .await()
+            val updatedUser = UserEntity(
+                uid = user.uid,
+                email = user.email ?: "",
+                username = username,
+                firstName = firstName,
+                lastName = lastName,
+                photoUrl = photoUrl
+            )
+            withContext(Dispatchers.IO) {
+                userDao.insertUser(updatedUser)
+            }
+            return Result.success(updatedUser)
+        } catch (e: Exception) {
+            return Result.failure(e)
+        }
+    }
     // Sign Up Function
     suspend fun register(
         email: String,
@@ -125,6 +154,8 @@ class AuthRepository(private val context: Context, private val userDao: UserDao)
             userDao.clearUsers()
         }
     }
+
+
 
 
     // Helper function to convert UserEntity to Map

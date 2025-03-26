@@ -56,5 +56,12 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
     }
+    fun updatePostUsernameAndProfile(username: String, oldUsername: String,profileImageUrl: String?) {
+        viewModelScope.launch {
+            repository.updatePostUsernameAndProfile(username, oldUsername,profileImageUrl)
+
+        }
+    }
+
 }
 

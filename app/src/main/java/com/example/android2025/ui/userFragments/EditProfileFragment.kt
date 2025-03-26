@@ -1,7 +1,9 @@
 package com.example.android2025.ui.userFragments
 
 import AuthViewModel
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,12 +12,17 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
+import com.example.android2025.MainActivity
 import com.example.android2025.databinding.FragmentEditProfileBinding
+import com.example.android2025.viewmodel.PostViewModel
 
 class EditProfileFragment : Fragment() {
 
     private lateinit var binding: FragmentEditProfileBinding
     private lateinit var authViewModel: AuthViewModel
+    private lateinit var postViewModel: PostViewModel
+    private var imageUri: Uri? = null
+
     private val args: EditProfileFragmentArgs by navArgs()
 
     override fun onCreateView(
@@ -28,18 +35,74 @@ class EditProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         authViewModel = ViewModelProvider(requireActivity())[AuthViewModel::class.java]
+        postViewModel = ViewModelProvider(requireActivity())[PostViewModel::class.java]
+
+        // fill in the form with the user's current information
 
         // initial form values from SafeArgs
+
         binding.etUsername.setText(args.username)
         binding.etFirstName.setText(args.firstName)
         binding.etLastName.setText(args.lastName)
-
-        // Load profile photo from args
-        Glide.with(this)
+        Glide.with(this) // Load profile photo from args
             .load(args.photoUrl)
             .placeholder(com.example.android2025.R.drawable.ic_default_profile)
             .into(binding.ivProfileImage)
 
+        // Open gallery when image is clicked and set the image to the ImageView
+        binding.ivProfileImage.setOnClickListener {
+            (activity as? MainActivity)?.launchImagePicker { uri ->
+                uri?.let {
+                    imageUri = it
+                    binding.ivProfileImage.setImageURI(it)
+                }
+            }
         }
+        binding.btnSave.setOnClickListener {
+            // Clear error message
+            binding.tvError.text = ""
 
+            val username = binding.etUsername.text.toString()
+            val firstName = binding.etFirstName.text.toString()
+            val lastName = binding.etLastName.text.toString()
+
+            // Validate input fields
+            when {
+                username.isEmpty() || firstName.isEmpty() || lastName.isEmpty() -> {
+                    binding.tvError.text = "Please fill in all fields."
+                    binding.tvError.visibility = View.VISIBLE
+                    return@setOnClickListener
+                }
+
+                else -> {
+                    binding.tvError.visibility = View.GONE
+                }
+            }
+            authViewModel.updateUser(username, firstName, lastName, imageUri, args.photoUrl) { newPhotoUrl ->
+                postViewModel.updatePostUsernameAndProfile(
+                    username,
+                    args.username,
+                    newPhotoUrl ?: args.photoUrl
+                )
+            }
+            findNavController().navigateUp()
+        }
+        // Observe error messages and display them
+        authViewModel.errorUpdateUser.observe(viewLifecycleOwner) { errorMsg ->
+            if (errorMsg.isNullOrEmpty()) {
+                binding.tvError.visibility = View.GONE
+            } else {
+                binding.tvError.text = errorMsg
+                binding.tvError.visibility = View.VISIBLE
+            }
+        }
+        // Navigate back to ProfileFragment
+        binding.tvCancelPost.setOnClickListener {
+            findNavController().navigateUp()
+        }
+    }
 }
+
+
+
+
