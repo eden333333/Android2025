@@ -22,7 +22,7 @@ interface MapillaryApiService {
         @Query("access_token") accessToken: String,
         @Query("bbox") bbox: String,
         @Query("fields") fields: String = "thumb_256_url",
-        @Query("limit") limit: Int = 5
+        @Query("limit") limit: Int = 10
     ): MapillaryResponse
 
     companion object {
