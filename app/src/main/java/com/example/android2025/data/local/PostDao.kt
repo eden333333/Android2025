@@ -10,6 +10,9 @@ interface PostDao {
     @Query("SELECT * FROM posts ORDER BY timestamp DESC")
      fun getPosts(): LiveData<List<PostEntity>>
 
+     @Query("SELECT * FROM posts WHERE postId = :postId")
+     suspend fun getPostById(postId: String): PostEntity
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPosts(posts: List<PostEntity>)
 

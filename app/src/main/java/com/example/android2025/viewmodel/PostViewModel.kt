@@ -12,6 +12,7 @@ import com.example.android2025.data.model.Post
 import com.example.android2025.data.repository.PostRepository
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.util.UUID
 
 
@@ -61,6 +62,9 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
             repository.updatePostUsernameAndProfile(username, oldUsername,profileImageUrl)
 
         }
+    }
+    fun getPostById(postId: String): Post?{
+        return runBlocking { repository.getPostById(postId) }
     }
 
 }

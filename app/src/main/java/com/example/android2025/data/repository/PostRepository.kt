@@ -57,6 +57,19 @@ class PostRepository(private val context: Context, private val postDao: PostDao)
         }
     }
 
+    suspend fun getPostById(postId: String): Post?{
+        val entity: PostEntity = postDao.getPostById(postId)
+        return Post(
+            postId=entity.postId,
+            uid = entity.uid,
+            username = entity.username,
+            profileImageUrl = entity.profileImageUrl,
+            content = entity.content,
+            photoUrl = entity.photoUrl,
+            timestamp = entity.timestamp,
+        )
+    }
+
     // Upload a new post to Firestore and update Room locally.
     suspend fun uploadPost(post: Post): Result<Void?> {
          try {
