@@ -36,7 +36,12 @@ class HomeFragment : Fragment() {
         // recyclerView setup with a LinearLayoutManager and A PostAdapter
 
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        postAdapter = PostAdapter(emptyList())
+        postAdapter = PostAdapter(emptyList()){postId ->
+            run {
+                val bundle = Bundle().apply { putString("postId", postId) }
+                findNavController().navigate(R.id.viewPostFragment, bundle)
+            }
+        }
         binding.recyclerView.adapter = postAdapter
 
         // observing the posts LiveData and updating the adapter when posts change

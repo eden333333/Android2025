@@ -3,6 +3,7 @@ package com.example.android2025.ui.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -10,7 +11,7 @@ import com.bumptech.glide.Glide
 import com.example.android2025.R
 import com.example.android2025.data.model.Post
 
-class PostAdapter(private var posts: List<Post>) : RecyclerView.Adapter<PostAdapter.PostViewHolder>() {
+class PostAdapter(private var posts: List<Post>, private val onViewPost:(String) -> Unit) : RecyclerView.Adapter<PostAdapter.PostViewHolder>() {
 
     inner class PostViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val tvUsername: TextView = itemView.findViewById(R.id.tvUsername)
@@ -45,6 +46,9 @@ class PostAdapter(private var posts: List<Post>) : RecyclerView.Adapter<PostAdap
                 .into(holder.ivImage)
         } else {
             holder.ivImage.visibility = View.GONE
+        }
+        holder.itemView.setOnClickListener{
+            onViewPost(post.postId)
         }
     }
 
