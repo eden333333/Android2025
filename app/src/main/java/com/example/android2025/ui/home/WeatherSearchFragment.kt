@@ -191,7 +191,7 @@ class WeatherSearchFragment : Fragment(), OnMapReadyCallback {
 
     lifecycleScope.launch {
         try {
-            val response = mapillaryApi.getImagesNearby(mapillaryToken, bbox, limit = 5)
+            val response = mapillaryApi.getImagesNearby(mapillaryToken, bbox, limit = 10)
             val imageUrls = response.data?.mapNotNull { it.thumbUrl } ?: emptyList()
 
             if (imageUrls.isNotEmpty()) {
