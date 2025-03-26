@@ -44,6 +44,9 @@
         <action
             android:id="@+id/action_homeFragment_to_createPostFragment"
             app:destination="@id/createPostFragment"/>
+        <action
+            android:id="@+id/action_homeFragment_to_viewPostFragment"
+            app:destination="@id/viewPostFragment" />
     </fragment>
 
     <!-- Create Post Screen -->
@@ -114,5 +117,10 @@
     android:name="com.example.android2025.ui.home.WeatherSearchFragment"
     android:label="Weather"
     tools:layout="@layout/fragment_weather_search" />
+    <fragment
+        android:id="@+id/viewPostFragment"
+        android:name="com.example.android2025.ui.postFragments.ViewPostFragment"
+        android:label="fragment_view_post"
+        tools:layout="@layout/fragment_view_post" />
 
 </navigation>
