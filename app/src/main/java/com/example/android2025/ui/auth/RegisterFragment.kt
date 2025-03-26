@@ -35,6 +35,7 @@ class RegisterFragment : Fragment() {
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         authViewModel = ViewModelProvider(requireActivity())[AuthViewModel::class.java]
+        postViewModel = ViewModelProvider(requireActivity())[PostViewModel::class.java]
 
 
         // Open gallery when image is clicked and set the image to the ImageView
