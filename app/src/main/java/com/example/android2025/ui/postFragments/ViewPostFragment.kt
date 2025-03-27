@@ -51,6 +51,7 @@ class ViewPostFragment : Fragment() {
         postViewModel = ViewModelProvider(requireActivity()).get(PostViewModel::class.java)
         authViewModel = ViewModelProvider(requireActivity()).get(AuthViewModel::class.java)
         val tvUsername: TextView = binding.tvUsername
+        val tvTime: TextView = binding.tvTime
         val tvContent: TextView = binding.tvContent
         val ivImage: ImageView = binding.ivImage
         val ivProfile: ImageView = binding.ivProfile
@@ -70,7 +71,8 @@ class ViewPostFragment : Fragment() {
                     tvUsername.text = post.username
                     tvContent.text = post.content
                     val formattedTime = sdf.format(Date(post.timestamp))
-                    //TODO ad timestamp
+                    tvTime.text = formattedTime
+
                     if (!post.photoUrl.isNullOrEmpty()) {
                         ivImage.visibility = View.VISIBLE
                         Glide.with(view.context)
@@ -83,9 +85,9 @@ class ViewPostFragment : Fragment() {
                         ivProfile.visibility = View.VISIBLE
                         Glide.with(view.context)
                             .load(post.profileImageUrl)
-                            .into(ivImage)
+                            .into(ivProfile)
                     } else {
-                        ivProfile.visibility = View.GONE
+                        ivProfile.setImageResource(R.drawable.ic_default_profile)
                     }
                     authViewModel.user.observe(viewLifecycleOwner) { user ->
                         user?.let {

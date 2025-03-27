@@ -121,6 +121,10 @@
         android:id="@+id/viewPostFragment"
         android:name="com.example.android2025.ui.postFragments.ViewPostFragment"
         android:label="fragment_view_post"
-        tools:layout="@layout/fragment_view_post" />
+        tools:layout="@layout/fragment_view_post" >
+        <argument
+            android:name="postId"
+            app:argType="string" />
+    </fragment>
 
 </navigation>

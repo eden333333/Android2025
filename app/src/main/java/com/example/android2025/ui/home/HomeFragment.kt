@@ -14,6 +14,7 @@ import com.example.android2025.R
 import com.example.android2025.data.model.Post
 import com.example.android2025.databinding.FragmentHomeBinding
 import com.example.android2025.ui.adapters.PostAdapter
+import com.example.android2025.ui.postFragments.ViewPostFragmentArgs
 import com.example.android2025.viewmodel.PostViewModel
 
 class HomeFragment : Fragment() {
@@ -36,7 +37,13 @@ class HomeFragment : Fragment() {
         // recyclerView setup with a LinearLayoutManager and A PostAdapter
 
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        postAdapter = PostAdapter(emptyList())
+        postAdapter = PostAdapter(emptyList()){postId ->
+            val action = HomeFragmentDirections.actionHomeFragmentToViewPostFragment(
+                postId=postId
+            )
+            findNavController().navigate(action)
+
+        }
         binding.recyclerView.adapter = postAdapter
 
         // observing the posts LiveData and updating the adapter when posts change
