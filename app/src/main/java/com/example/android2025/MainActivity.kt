@@ -75,7 +75,7 @@ class MainActivity :  AppCompatActivity() {
         // Observe the user LiveData
         authViewModel.user.observe(this) { user ->
             if (user != null &&
-                ( navController.currentDestination?.id == R.id.loginFragment ) || ( navController.currentDestination?.id == R.id.registerFragment )) {
+                (( navController.currentDestination?.id == R.id.loginFragment ) || ( navController.currentDestination?.id == R.id.registerFragment ))) {
                 navController.navigate(R.id.homeFragment)
                 postViewModel.refreshPosts()
             }

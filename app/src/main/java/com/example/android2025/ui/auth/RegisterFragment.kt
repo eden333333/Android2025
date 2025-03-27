@@ -116,14 +116,6 @@ class RegisterFragment : Fragment() {
             }
         }
 
-        // Observe user signup status and navigate to HomeFragment on success
-        authViewModel.user.observe(viewLifecycleOwner) { user ->
-            user?.let {
-                findNavController().navigate(R.id.action_registerFragment_to_homeFragment)
-                postViewModel.refreshPosts()
-
-            }
-        }
 
 
 
