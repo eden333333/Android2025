@@ -18,11 +18,11 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     //observers
     val user: LiveData<UserEntity?> = repository.getUser()
 
+    private val _logoutSuccess = MutableLiveData<Boolean?>()
+    val logoutSuccess: LiveData<Boolean?> get() = _logoutSuccess
+
     private val _loading = MutableLiveData<Boolean>()
     val loading: LiveData<Boolean> = _loading
-
-    private val _logoutComplete = MutableLiveData<Boolean>()
-    val logoutComplete: LiveData<Boolean> = _logoutComplete
 
     private val _errorRegister = MutableLiveData<String>()
     val errorRegister: LiveData<String> = _errorRegister
@@ -77,11 +77,14 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     fun logout() {
         viewModelScope.launch {
             repository.logout()
-            _logoutComplete.value = true
-
+            _logoutSuccess.postValue(true)
         }
-
     }
+
+    fun resetLogoutSuccess() {
+        _logoutSuccess.value = null
+    }
+
     fun updateUser(
         username: String,
         firstName: String,

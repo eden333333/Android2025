@@ -85,15 +85,6 @@ class LoginFragment : Fragment() {
             }
         }
 
-        // Observe user login status and navigate to HomeFragment on success
-        authViewModel.user.observe(viewLifecycleOwner) { user ->
-            user?.let {
-                findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
-                postViewModel.refreshPosts()
-
-            }
-        }
-
 
 
     }
