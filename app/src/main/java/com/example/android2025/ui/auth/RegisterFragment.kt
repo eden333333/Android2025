@@ -99,7 +99,7 @@ class RegisterFragment : Fragment() {
         authViewModel.loading.observe(viewLifecycleOwner) { loading ->
             if (loading) {
                 binding.progressBar.visibility = View.VISIBLE
-                binding.tvLogin.isEnabled = false
+                binding.btnSignUp.isEnabled = false
             } else {
                 binding.progressBar.visibility = View.GONE
             }

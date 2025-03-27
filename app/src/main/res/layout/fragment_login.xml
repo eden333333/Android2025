@@ -113,7 +113,15 @@
                 android:textStyle="bold" />
 
 
-
+            <!-- ProgressBar -->
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:indeterminateTint="@color/blue"
+                android:visibility="gone"
+                tools:visibility="visible" />
 
             <!-- Error TextView -->
             <TextView
