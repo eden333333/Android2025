@@ -24,7 +24,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="24dp">
+            android:padding="24dp"
+            >
 
             <!-- Create Post Title -->
             <TextView
@@ -88,9 +89,22 @@
                 android:textColor="@android:color/white"
                 android:textStyle="bold" />
 
+            <!-- ProgressBar -->
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:indeterminateTint="@color/blue"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:layout_gravity="center"/>
+
             <!-- Cancel Option -->
+
             <TextView
                 android:id="@+id/tvCancelPost"
+                android:layout_marginTop="8dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -98,6 +112,7 @@
                 android:textColor="@color/blue"
                 android:textSize="16sp"
                 android:textStyle="bold" />
+
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

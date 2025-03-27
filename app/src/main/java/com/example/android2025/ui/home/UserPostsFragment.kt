@@ -45,6 +45,13 @@ class UserPostsFragment: Fragment() {
         binding.recyclerView.adapter = postAdapter
 
 
+        // LiveData Observers
+
+        // Observe the loading LiveData to show/hide the ProgressBar
+        postViewModel.loading.observe(viewLifecycleOwner) { loading ->
+            binding.progressBar.visibility = if (loading) View.VISIBLE else View.GONE
+        }
+
         // observing the posts LiveData and updating the adapter when posts change
 
         postViewModel.posts.observe(viewLifecycleOwner) { posts ->

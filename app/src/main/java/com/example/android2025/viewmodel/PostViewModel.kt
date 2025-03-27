@@ -30,6 +30,10 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
 
     val posts: LiveData<List<PostEntity>> = repository.getPosts()
 
+    // Spinner LiveData
+    private val _loading = MutableLiveData<Boolean>()
+    val loading: LiveData<Boolean> = _loading
+
     // Errors LiveData
 
     private val _errorLoadingPosts = MutableLiveData<String>()
@@ -40,14 +44,18 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
 
 
     fun refreshPosts() {
+        _loading.value = true
         _errorLoadingPosts.value = ""
         viewModelScope.launch {
             val result = repository.loadPosts()
             result.onSuccess {
                 Log.d("PostViewModel", "Posts loaded successfully")
+                _errorLoadingPosts.value = ""
+                _loading.value = false
             }.onFailure {
                 Log.e("PostViewModel", "Failed to load posts: ${it.message}")
                 _errorLoadingPosts.value = it.message
+                _loading.value = false
             }
         }
     }
@@ -56,6 +64,8 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         imageUri: Uri?,
         currentUser: UserEntity
     ) {
+        _loading.value = true
+        _errorUploadPost.value = ""
         viewModelScope.launch {
             val photoUrl = imageUri?.let { uri ->
                 repository.uploadImageToCloudinary(uri).getOrNull()
@@ -75,15 +85,17 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
             result.onSuccess {
                 Log.d("PostViewModel", "Post uploaded successfully")
                 _errorUploadPost.value = ""
+                _loading.value = false
             }.onFailure {
                 Log.e("PostViewModel", "Failed to upload post: ${it.message}")
                 _errorUploadPost.value = it.message
+                _loading.value = false
             }
         }
     }
     fun updatePostUsernameAndProfile(username: String, oldUsername: String,profileImageUrl: String?) {
         viewModelScope.launch {
-            repository.updatePostUsernameAndProfile(username, oldUsername,profileImageUrl)
+           repository.updatePostUsernameAndProfile(username, oldUsername,profileImageUrl)
         }
     }
     fun getPostById(postId: String): Post?{

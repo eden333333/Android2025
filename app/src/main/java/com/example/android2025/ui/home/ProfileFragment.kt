@@ -28,8 +28,11 @@ class ProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        // Initialize ViewModel clearly
+        // Initialize ViewModel
         authViewModel = ViewModelProvider(requireActivity())[AuthViewModel::class.java]
+
+
+        //Observers
 
         // Observe the user data from ViewModel
         authViewModel.user.observe(viewLifecycleOwner) { user ->
