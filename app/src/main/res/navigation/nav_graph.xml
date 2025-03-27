@@ -117,6 +117,9 @@
     android:name="com.example.android2025.ui.home.WeatherSearchFragment"
     android:label="Weather"
     tools:layout="@layout/fragment_weather_search" />
+
+    <!-- View post Page -->
+
     <fragment
         android:id="@+id/viewPostFragment"
         android:name="com.example.android2025.ui.postFragments.ViewPostFragment"
@@ -128,6 +131,24 @@
         <action
             android:id="@+id/action_viewPostFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
+        <action
+            android:id="@+id/action_viewPostFragment_to_editPostFragment"
+            app:destination="@id/editPostFragment" />
+        <action
+            android:id="@+id/action_viewPostFragment_to_editPostFragment2"
+            app:destination="@id/editPostFragment" />
+    </fragment>
+
+    <!-- Edit post Page -->
+
+    <fragment
+        android:id="@+id/editPostFragment"
+        android:name="com.example.android2025.ui.postFragments.EditPostFragment"
+        android:label="fragment_edit_post"
+        tools:layout="@layout/fragment_edit_post" >
+        <argument
+            android:name="postId"
+            app:argType="string" />
     </fragment>
 
 </navigation>
