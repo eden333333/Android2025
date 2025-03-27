@@ -111,6 +111,10 @@
                 android:text="LOGIN"
                 android:textColor="@android:color/white"
                 android:textStyle="bold" />
+
+
+
+
             <!-- Error TextView -->
             <TextView
                 android:id="@+id/tvError"

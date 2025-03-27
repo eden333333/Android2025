@@ -97,6 +97,7 @@ class PostRepository(private val context: Context, private val postDao: PostDao)
     // Update the username and profile image of all posts in Firestore and Room
     suspend fun updatePostUsernameAndProfile(username: String, oldUsername: String, profileImageUrl: String?) {
         // update Firestore
+        try {
         firestore.collection("posts")
             .whereEqualTo("username", oldUsername)
             .get()
@@ -113,6 +114,9 @@ class PostRepository(private val context: Context, private val postDao: PostDao)
         // update Room
         withContext(Dispatchers.IO) {
             postDao.updatePostUsernameAndProfile(username, oldUsername, profileImageUrl )
+        }
+        } catch (e: Exception) {
+            throw e
         }
     }
     // Upload an image to Cloudinary and return the URL

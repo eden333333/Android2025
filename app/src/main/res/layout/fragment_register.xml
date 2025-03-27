@@ -13,6 +13,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="32dp"
+        android:layout_marginBottom="8dp"
         android:background="@android:color/white"
         app:cardCornerRadius="16dp"
         app:cardElevation="16dp"
@@ -25,7 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="24dp">
+            android:padding="12dp">
 
             <!-- Sign Up Title -->
             <TextView
@@ -48,8 +49,8 @@
                 android:layout_marginBottom="16dp"
                 android:background="@drawable/edittext_background"
                 android:hint="Username"
-                android:padding="14dp"
                 android:inputType="text"
+                android:padding="14dp"
                 tools:ignore="HardcodedText" />
 
             <!-- First Name Input -->
@@ -72,8 +73,8 @@
                 android:layout_marginBottom="16dp"
                 android:background="@drawable/edittext_background"
                 android:hint="Last Name"
-                android:padding="14dp"
                 android:inputType="textPersonName"
+                android:padding="14dp"
                 tools:ignore="HardcodedText" />
 
             <!-- Email Input -->
@@ -96,8 +97,8 @@
                 android:layout_marginBottom="16dp"
                 android:background="@drawable/edittext_background"
                 android:hint="Password"
-                android:padding="14dp"
                 android:inputType="textPassword"
+                android:padding="14dp"
                 tools:ignore="HardcodedText" />
 
             <!-- Profile Picture Selection -->
@@ -113,7 +114,7 @@
                 android:focusable="true"
                 android:scaleType="centerCrop"
                 android:src="@drawable/ic_add_photo"
-                app:shapeAppearanceOverlay="@style/CircleImageView"/>
+                app:shapeAppearanceOverlay="@style/CircleImageView" />
 
 
             <!-- Error TextView -->
@@ -122,11 +123,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
+                android:text=""
+                android:textAlignment="center"
                 android:textColor="@android:color/holo_red_dark"
                 android:textSize="14sp"
-                android:visibility="gone"
-                android:text=""
-                android:textAlignment="center" />
+                android:visibility="gone" />
 
             <!-- Sign Up Button -->
 
@@ -140,6 +141,16 @@
                 android:textColor="@android:color/white"
                 android:textStyle="bold"
                 tools:ignore="HardcodedText" />
+
+            <!-- ProgressBar -->
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:indeterminateTint="@color/blue"
+                android:visibility="gone"
+                tools:visibility="visible" />
 
 
             <!-- Login Text Inside CardView -->

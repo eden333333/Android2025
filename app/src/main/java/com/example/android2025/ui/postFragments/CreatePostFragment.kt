@@ -34,18 +34,11 @@ class CreatePostFragment : Fragment() {
         postViewModel = ViewModelProvider(requireActivity()).get(PostViewModel::class.java)
         authViewModel = ViewModelProvider(requireActivity()).get(AuthViewModel::class.java)
 
-        // set click listener for image selection
-        binding.ivPostImage.setOnClickListener {
-            (activity as MainActivity).launchImagePicker { uri ->
-                if (uri != null) {
-                    selectedImageUri = uri
-                    // Display the selected image
-                    binding.ivPostImage.setImageURI(uri)
-                }
-            }
-        }
+
+        // Listeners
 
         // set click listener for the upload button
+
         binding.btnUploadPost.setOnClickListener {
             binding.tvPostError.text = ""
             val content = binding.etPostContent.text.toString().trim()
@@ -69,6 +62,29 @@ class CreatePostFragment : Fragment() {
                 findNavController().navigateUp()
             }
         }
+
+        // set click listener for image selection
+
+        binding.ivPostImage.setOnClickListener {
+            (activity as MainActivity).launchImagePicker { uri ->
+                if (uri != null) {
+                    selectedImageUri = uri
+                    // Display the selected image
+                    binding.ivPostImage.setImageURI(uri)
+                }
+            }
+        }
+
+        // set click listener for the cancel option
+
+        binding.tvCancelPost.setOnClickListener {
+            //  navigate back (pop the back stack)
+            findNavController().navigateUp()
+        }
+
+        // Observers
+
+        // observe the error message for uploading a post
         postViewModel.errorUploadPost.observe(viewLifecycleOwner) { errorMsg ->
             if (errorMsg.isNullOrEmpty()) {
                 binding.tvPostError.visibility = View.GONE
@@ -78,11 +94,12 @@ class CreatePostFragment : Fragment() {
             }
         }
 
-        // set click listener for the cancel option
-        binding.tvCancelPost.setOnClickListener {
-            //  navigate back (pop the back stack)
-            findNavController().navigateUp()
+        // observe the loading state
+        postViewModel.loading.observe(viewLifecycleOwner) { loading ->
+            binding.progressBar.visibility = if (loading) View.VISIBLE else View.GONE
         }
+
+
     }
 
 

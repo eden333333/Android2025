@@ -31,6 +31,8 @@ class LoginFragment : Fragment() {
         postViewModel = ViewModelProvider(requireActivity())[PostViewModel::class.java]
 
 
+        // Listeners
+
         // Handle Login button click
         binding.btnLogin.setOnClickListener {
             binding.tvError.text = ""
@@ -54,6 +56,24 @@ class LoginFragment : Fragment() {
             }
             authViewModel.login(email, password)
         }
+
+        // Handle Sign Up navigation
+        binding.tvSignUp.setOnClickListener {
+            findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
+        }
+
+        //Observers
+
+        // Observe loading status and show/hide progress bar
+        authViewModel.loading.observe(viewLifecycleOwner) { loading ->
+            if (loading) {
+                binding.progressBar.visibility = View.VISIBLE
+                binding.btnLogin.isEnabled = false
+            } else {
+                binding.progressBar.visibility = View.GONE
+            }
+        }
+
         // Observe error messages and display them
         authViewModel.errorLogin.observe(viewLifecycleOwner) { errorMsg ->
             if (errorMsg.isNullOrEmpty()) {
@@ -64,7 +84,6 @@ class LoginFragment : Fragment() {
             }
         }
 
-
         // Observe user login status and navigate to HomeFragment on success
         authViewModel.user.observe(viewLifecycleOwner) { user ->
             user?.let {
@@ -74,10 +93,6 @@ class LoginFragment : Fragment() {
             }
         }
 
-        // Handle Sign Up navigation
-        binding.tvSignUp.setOnClickListener {
-            findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
-        }
 
 
     }
