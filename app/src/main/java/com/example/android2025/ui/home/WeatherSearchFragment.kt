@@ -95,6 +95,10 @@ class WeatherSearchFragment : Fragment(), OnMapReadyCallback {
             val city = binding.cityInput.text.toString()
             weatherViewModel.fetchWeather(city)
         }
+        weatherViewModel.loading.observe(viewLifecycleOwner) { loading ->
+            binding.progressBar.visibility = if (loading) View.VISIBLE else View.GONE
+        }
+
 
         lifecycleScope.launch {
             cityViewModel.citySuggestions.collectLatest { suggestions ->

@@ -15,11 +15,14 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     private val postDao = AppDatabase.getDatabase(application).postDao()
     private val repository = AuthRepository(application,userDao,postDao)
 
-
+    //observers
     val user: LiveData<UserEntity?> = repository.getUser()
 
-    private val _logoutComplete = MutableLiveData<Boolean>()
-    val logoutComplete: LiveData<Boolean> = _logoutComplete
+    private val _logoutSuccess = MutableLiveData<Boolean?>()
+    val logoutSuccess: LiveData<Boolean?> get() = _logoutSuccess
+
+    private val _loading = MutableLiveData<Boolean>()
+    val loading: LiveData<Boolean> = _loading
 
     private val _errorRegister = MutableLiveData<String>()
     val errorRegister: LiveData<String> = _errorRegister
@@ -39,14 +42,17 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         lastName: String,
         imageUri: Uri?
     ) {
+        _loading.value = true
         viewModelScope.launch {
             val photoUrl = imageUri?.let { uri ->
                 repository.uploadImageToCloudinary(uri)
             }
             val result = repository.register(email, password, username, firstName, lastName, photoUrl)
             result.onSuccess {
+                _loading.value = false
                 Log.d("AuthViewModel", "Registration successful: ${it.uid}")
             }.onFailure {
+                _loading.value = false
                 _errorRegister.value = it.message
                 Log.e("AuthViewModel", "Registration failed: ${it.message}")
 
@@ -56,11 +62,14 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
 
     // Login function
     fun login(email: String, password: String) {
+        _loading.value = true
         viewModelScope.launch {
             val result = repository.login(email, password)
             result.onSuccess {
+                _loading.value = false
                 Log.d("AuthViewModel", "Login successful: ${it.uid}")
             }.onFailure {
+                _loading.value = false
                 _errorLogin.value = it.message
             }
         }
@@ -68,11 +77,14 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     fun logout() {
         viewModelScope.launch {
             repository.logout()
-            _logoutComplete.value = true
-
+            _logoutSuccess.postValue(true)
         }
-
     }
+
+    fun resetLogoutSuccess() {
+        _logoutSuccess.value = null
+    }
+
     fun updateUser(
         username: String,
         firstName: String,
@@ -81,6 +93,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         currentPhotoUrl: String?,
         onSuccess: (String?) -> Unit = {}
     ) {
+        _loading.value = true
         viewModelScope.launch {
             val photoUrl = if (imageUri != null) {
                 repository.uploadImageToCloudinary(imageUri)
@@ -89,9 +102,11 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
             val result = repository.updateUser(username, firstName, lastName, photoUrl)
             result.onSuccess {
                 Log.d("AuthViewModel", "User updated successfully")
+                _loading.value = false
                 onSuccess(photoUrl)
             }.onFailure {
                 _errorUpdateUser.value = it.message
+                _loading.value = false
                 Log.e("AuthViewModel", "User update failed: ${it.message}")
             }
         }

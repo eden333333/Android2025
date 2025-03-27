@@ -38,15 +38,10 @@ class RegisterFragment : Fragment() {
         postViewModel = ViewModelProvider(requireActivity())[PostViewModel::class.java]
 
 
-        // Open gallery when image is clicked and set the image to the ImageView
-        binding.ivProfileImage.setOnClickListener {
-            (activity as? MainActivity)?.launchImagePicker { uri ->
-                uri?.let {
-                    imageUri = it
-                    binding.ivProfileImage.setImageURI(it)
-                }
-            }
-        }
+        // Listeners
+
+        // Handle Sign Up button click
+
         binding.btnSignUp.setOnClickListener {
             // Clear error message
             binding.tvError.text = ""
@@ -80,6 +75,37 @@ class RegisterFragment : Fragment() {
             }
             authViewModel.register(email, password, username, firstName, lastName, imageUri)
         }
+
+        // Open gallery when image is clicked and set the image to the ImageView
+        binding.ivProfileImage.setOnClickListener {
+            (activity as? MainActivity)?.launchImagePicker { uri ->
+                uri?.let {
+                    imageUri = it
+                    binding.ivProfileImage.setImageURI(it)
+                }
+            }
+        }
+
+        // Handle Sign In navigation
+        binding.tvLogin.setOnClickListener {
+            findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
+        }
+
+
+
+        // Observers
+
+        // Observe loading status and show/hide progress bar
+        authViewModel.loading.observe(viewLifecycleOwner) { loading ->
+            if (loading) {
+                binding.progressBar.visibility = View.VISIBLE
+                binding.btnSignUp.isEnabled = false
+            } else {
+                binding.progressBar.visibility = View.GONE
+                binding.btnSignUp.isEnabled = true
+            }
+        }
+
         // Observe error messages and display them
         authViewModel.errorRegister.observe(viewLifecycleOwner) { errorMsg ->
             if (errorMsg.isNullOrEmpty()) {
@@ -89,18 +115,7 @@ class RegisterFragment : Fragment() {
                 binding.tvError.visibility = View.VISIBLE
             }
         }
-        // Observe user signup status and navigate to HomeFragment on success
-        authViewModel.user.observe(viewLifecycleOwner) { user ->
-            user?.let {
-                findNavController().navigate(R.id.action_registerFragment_to_homeFragment)
-                postViewModel.refreshPosts()
 
-            }
-        }
-        // Handle Sign In navigation
-        binding.tvLogin.setOnClickListener {
-            findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
-        }
 
 
 

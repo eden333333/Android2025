@@ -38,7 +38,6 @@ class EditProfileFragment : Fragment() {
         postViewModel = ViewModelProvider(requireActivity())[PostViewModel::class.java]
 
         // fill in the form with the user's current information
-
         // initial form values from SafeArgs
 
         binding.etUsername.setText(args.username)
@@ -49,15 +48,10 @@ class EditProfileFragment : Fragment() {
             .placeholder(com.example.android2025.R.drawable.ic_default_profile)
             .into(binding.ivProfileImage)
 
-        // Open gallery when image is clicked and set the image to the ImageView
-        binding.ivProfileImage.setOnClickListener {
-            (activity as? MainActivity)?.launchImagePicker { uri ->
-                uri?.let {
-                    imageUri = it
-                    binding.ivProfileImage.setImageURI(it)
-                }
-            }
-        }
+
+        // Listeners
+
+        // Save button listener
         binding.btnSave.setOnClickListener {
             // Clear error message
             binding.tvError.text = ""
@@ -87,6 +81,33 @@ class EditProfileFragment : Fragment() {
             }
             findNavController().navigateUp()
         }
+        // Profile image listener to launch image picker
+        binding.ivProfileImage.setOnClickListener {
+            (activity as? MainActivity)?.launchImagePicker { uri ->
+                uri?.let {
+                    imageUri = it
+                    binding.ivProfileImage.setImageURI(it)
+                }
+            }
+        }
+
+        // Navigate back to ProfileFragment
+        binding.tvCancelPost.setOnClickListener {
+            findNavController().navigateUp()
+        }
+
+        // Observers
+
+        // Observe loading state and show/hide progress bar
+        authViewModel.loading.observe(viewLifecycleOwner) { isLoading ->
+            if (isLoading) {
+                binding.progressBar.visibility = View.VISIBLE
+                binding.btnSave.isEnabled = false
+            } else {
+                binding.progressBar.visibility = View.GONE
+            }
+        }
+
         // Observe error messages and display them
         authViewModel.errorUpdateUser.observe(viewLifecycleOwner) { errorMsg ->
             if (errorMsg.isNullOrEmpty()) {
@@ -96,10 +117,7 @@ class EditProfileFragment : Fragment() {
                 binding.tvError.visibility = View.VISIBLE
             }
         }
-        // Navigate back to ProfileFragment
-        binding.tvCancelPost.setOnClickListener {
-            findNavController().navigateUp()
-        }
+
     }
 }
 

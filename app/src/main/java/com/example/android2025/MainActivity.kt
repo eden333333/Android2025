@@ -16,11 +16,14 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.navigation.fragment.findNavController
+import com.example.android2025.viewmodel.PostViewModel
 
 class MainActivity :  AppCompatActivity() {
 
     private lateinit var navController: NavController
     private lateinit var authViewModel: AuthViewModel
+    private lateinit var postViewModel: PostViewModel
     private lateinit var imagePickerLauncher: ActivityResultLauncher<String>
     private var imagePickerCallback: ((Uri?) -> Unit)? = null
 
@@ -58,20 +61,34 @@ class MainActivity :  AppCompatActivity() {
                 supportActionBar?.show()
             }
         }
-
-        /** Initialize  ViewModel for authentication */
-        authViewModel = ViewModelProvider(this).get(AuthViewModel::class.java)
-
-
         /** Register the global image picker launcher */
         imagePickerLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
             imagePickerCallback?.invoke(uri)
         }
-        authViewModel.logoutComplete.observe(this) { isDone ->
-            if (isDone == true) {
-                navController.navigate(R.id.loginFragment)
+
+        /** Initialize ViewModels **/
+        // Initialize ViewModel for posts
+        postViewModel = ViewModelProvider(this)[PostViewModel::class.java]
+        // Initialize ViewModel for authentication
+        authViewModel = ViewModelProvider(this)[AuthViewModel::class.java]
+
+        // Observe the user LiveData
+        authViewModel.user.observe(this) { user ->
+            if (user != null &&
+                (( navController.currentDestination?.id == R.id.loginFragment ) || ( navController.currentDestination?.id == R.id.registerFragment ))) {
+                navController.navigate(R.id.homeFragment)
+                postViewModel.refreshPosts()
             }
         }
+
+        authViewModel.logoutSuccess.observe(this) { success ->
+            if (success == true) {
+                navController.navigate(R.id.loginFragment)
+                authViewModel.resetLogoutSuccess()
+            }
+        }
+
+
 
     }
 
