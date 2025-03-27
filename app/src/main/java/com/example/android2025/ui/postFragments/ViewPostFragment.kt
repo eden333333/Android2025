@@ -12,11 +12,13 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.android2025.R
 import com.example.android2025.data.model.Post
 import com.example.android2025.databinding.FragmentCreatePostBinding
 import com.example.android2025.databinding.FragmentViewPostBinding
+import com.example.android2025.ui.home.HomeFragmentDirections
 import com.example.android2025.viewmodel.PostViewModel
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -97,6 +99,11 @@ class ViewPostFragment : Fragment() {
                             }
                         }
                     }
+                    btnDelete.setOnClickListener( {view ->
+                        postViewModel.deletePost(post.postId)
+                        val action = ViewPostFragmentDirections.actionViewPostFragmentToHomeFragment()
+                        findNavController().navigate(action)
+                    })
 
                 }
             }

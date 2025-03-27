@@ -90,5 +90,12 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         return runBlocking { repository.getPostById(postId) }
     }
 
+    fun deletePost(postId: String){
+        viewModelScope.launch {
+
+            repository.deletePostById(postId)
+        }
+    }
+
 }
 

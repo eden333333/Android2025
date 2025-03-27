@@ -71,6 +71,20 @@ class PostRepository(private val context: Context, private val postDao: PostDao)
         )
     }
 
+    suspend fun deletePostById(postId: String):Result<Unit>{
+        try{
+            firestore.collection("posts").document(postId).delete()
+            withContext(Dispatchers.IO){
+                postDao.deletePostById(postId)
+            }
+            return Result.success(Unit)
+        }catch (e: Exception) {
+            return Result.failure(e)
+        }
+
+
+    }
+
     // Upload a new post to Firestore and update Room locally.
     suspend fun uploadPost(post: Post): Result<PostEntity> {
          try {

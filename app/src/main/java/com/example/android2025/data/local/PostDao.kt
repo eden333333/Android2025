@@ -22,4 +22,7 @@ interface PostDao {
 
     @Query("DELETE FROM posts")
     suspend fun clearPosts()
+
+    @Query("DELETE FROM posts where postId = :postId")
+    suspend fun deletePostById(postId: String)
 }
