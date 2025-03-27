@@ -71,6 +71,7 @@ class LoginFragment : Fragment() {
                 binding.btnLogin.isEnabled = false
             } else {
                 binding.progressBar.visibility = View.GONE
+                binding.btnLogin.isEnabled = true
             }
         }
 

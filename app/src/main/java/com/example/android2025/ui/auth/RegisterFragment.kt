@@ -102,6 +102,7 @@ class RegisterFragment : Fragment() {
                 binding.btnSignUp.isEnabled = false
             } else {
                 binding.progressBar.visibility = View.GONE
+                binding.btnSignUp.isEnabled = true
             }
         }
 
