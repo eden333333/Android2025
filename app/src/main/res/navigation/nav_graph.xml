@@ -134,9 +134,6 @@
         <action
             android:id="@+id/action_viewPostFragment_to_editPostFragment"
             app:destination="@id/editPostFragment" />
-        <action
-            android:id="@+id/action_viewPostFragment_to_editPostFragment2"
-            app:destination="@id/editPostFragment" />
     </fragment>
 
     <!-- Edit post Page -->
