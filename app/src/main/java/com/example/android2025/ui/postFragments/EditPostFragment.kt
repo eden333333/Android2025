@@ -85,14 +85,8 @@ class EditPostFragment : Fragment() {
             } else {
                 binding.tvPostError.visibility = View.GONE
                 postViewModel.updatePost(post, content, selectedImageUri)
+                findNavController().navigateUp()
 
-                // Navigate back to the previous fragment and send the updated post id
-                findNavController().navigateUp()
-                val resultBundle = Bundle().apply {
-                    putString("updated_post_id", post.postId)
-                }
-                parentFragmentManager.setFragmentResult("post_updated", resultBundle)
-                findNavController().navigateUp()
             }
         }
 

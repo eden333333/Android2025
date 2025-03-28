@@ -41,22 +41,18 @@ class ViewPostFragment : Fragment() {
         postViewModel = ViewModelProvider(requireActivity())[PostViewModel::class.java]
         authViewModel = ViewModelProvider(requireActivity())[AuthViewModel::class.java]
 
-        // initial bind
+        // initial binds
         val post = args.post
         bindPost(post)
 
-        // listen for updated post result from EditPostFragment
-        parentFragmentManager.setFragmentResultListener(
-            "post_updated", viewLifecycleOwner
-        ) { _, bundle ->
-            val updatedPostId = bundle.getString("updated_post_id")
-            if (!updatedPostId.isNullOrEmpty()) {
-                val updatedPost = postViewModel.posts.value?.find { it.postId == updatedPostId }
-                if (updatedPost != null) {
-                    bindPost(updatedPost.toModel())  // Convert PostEntity to Post
-                }
+        // observe post
+        postViewModel.posts.observe(viewLifecycleOwner) { posts ->
+            val postEntity = posts.find { it.postId == post.postId }
+            if (postEntity != null) {
+                bindPost(postEntity.toModel())
             }
         }
+
     }
 
     private fun bindPost(post: Post) {
