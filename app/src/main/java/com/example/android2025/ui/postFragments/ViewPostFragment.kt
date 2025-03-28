@@ -94,7 +94,7 @@ class ViewPostFragment : Fragment() {
             findNavController().navigate(action)
         }
 
-        // Delete button listener (optional)
+        // delete button listener
         binding.btnDelete.setOnClickListener {
             postViewModel.deletePost(post.postId)
             findNavController().navigateUp()

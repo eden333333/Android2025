@@ -131,7 +131,6 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
 
     fun deletePost(postId: String){
         viewModelScope.launch {
-
             repository.deletePostById(postId)
         }
     }

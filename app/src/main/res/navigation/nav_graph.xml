@@ -66,7 +66,7 @@
     <fragment
         android:id="@+id/viewPostFragment"
         android:name="com.example.android2025.ui.postFragments.ViewPostFragment"
-        android:label="View Post"
+        android:label="Details"
         tools:layout="@layout/fragment_view_post" >
         <argument
             android:name="post"
@@ -84,7 +84,7 @@
     <fragment
         android:id="@+id/editPostFragment"
         android:name="com.example.android2025.ui.postFragments.EditPostFragment"
-        android:label="Edit Post"
+        android:label="Edit"
         tools:layout="@layout/fragment_edit_post" >
         <argument
             android:name="post"
@@ -118,7 +118,7 @@
     <fragment
         android:id="@+id/editProfileFragment"
         android:name="com.example.android2025.ui.userFragments.EditProfileFragment"
-        android:label="Edit Profile"
+        android:label="Edit"
         tools:layout="@layout/fragment_edit_profile">
 
         <argument
