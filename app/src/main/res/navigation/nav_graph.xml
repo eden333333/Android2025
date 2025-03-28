@@ -60,6 +60,37 @@
             app:destination="@id/homeFragment"/>
     </fragment>
 
+
+    <!-- View post Page -->
+
+    <fragment
+        android:id="@+id/viewPostFragment"
+        android:name="com.example.android2025.ui.postFragments.ViewPostFragment"
+        android:label="View Post"
+        tools:layout="@layout/fragment_view_post" >
+        <argument
+            android:name="post"
+            app:argType="com.example.android2025.data.model.Post" />
+        <action
+            android:id="@+id/action_viewPostFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+        <action
+            android:id="@+id/action_viewPostFragment_to_editPostFragment"
+            app:destination="@id/editPostFragment" />
+    </fragment>
+
+    <!-- Edit post Page -->
+
+    <fragment
+        android:id="@+id/editPostFragment"
+        android:name="com.example.android2025.ui.postFragments.EditPostFragment"
+        android:label="Edit Post"
+        tools:layout="@layout/fragment_edit_post" >
+        <argument
+            android:name="post"
+            app:argType="com.example.android2025.data.model.Post" />
+    </fragment>
+
     <!-- User Posts Page -->
     <fragment
         android:id="@+id/userPostsFragment"
@@ -121,34 +152,5 @@
     android:label="Weather"
     tools:layout="@layout/fragment_weather_search" />
 
-    <!-- View post Page -->
-
-    <fragment
-        android:id="@+id/viewPostFragment"
-        android:name="com.example.android2025.ui.postFragments.ViewPostFragment"
-        android:label="fragment_view_post"
-        tools:layout="@layout/fragment_view_post" >
-        <argument
-            android:name="post"
-            app:argType="com.example.android2025.data.model.Post" />
-        <action
-            android:id="@+id/action_viewPostFragment_to_homeFragment"
-            app:destination="@id/homeFragment" />
-        <action
-            android:id="@+id/action_viewPostFragment_to_editPostFragment"
-            app:destination="@id/editPostFragment" />
-    </fragment>
-
-    <!-- Edit post Page -->
-
-    <fragment
-        android:id="@+id/editPostFragment"
-        android:name="com.example.android2025.ui.postFragments.EditPostFragment"
-        android:label="fragment_edit_post"
-        tools:layout="@layout/fragment_edit_post" >
-        <argument
-            android:name="post"
-            app:argType="com.example.android2025.data.model.Post" />
-    </fragment>
 
 </navigation>

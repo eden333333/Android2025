@@ -26,8 +26,6 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     private val postDao = AppDatabase.getDatabase(application).postDao()
     private val repository = PostRepository(application, postDao)
 
-
-
     // LiveData from the local Room database
 
     val posts: LiveData<List<PostEntity>> = repository.getPosts()

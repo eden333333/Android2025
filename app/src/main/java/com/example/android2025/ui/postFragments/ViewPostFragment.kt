@@ -1,34 +1,23 @@
 package com.example.android2025.ui.postFragments
 
 import AuthViewModel
-import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.example.android2025.R
+import com.example.android2025.data.local.PostEntity
 import com.example.android2025.data.model.Post
-import com.example.android2025.databinding.FragmentCreatePostBinding
 import com.example.android2025.databinding.FragmentViewPostBinding
-import com.example.android2025.ui.home.HomeFragmentDirections
 import com.example.android2025.viewmodel.PostViewModel
-import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
 
 class ViewPostFragment : Fragment() {
 
@@ -44,76 +33,89 @@ class ViewPostFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Inflate the layout for this fragment
-        //return inflater.inflate(R.layout.fragment_view_post, container, false)
         _binding = FragmentViewPostBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        postViewModel = ViewModelProvider(requireActivity()).get(PostViewModel::class.java)
-        authViewModel = ViewModelProvider(requireActivity()).get(AuthViewModel::class.java)
+        postViewModel = ViewModelProvider(requireActivity())[PostViewModel::class.java]
+        authViewModel = ViewModelProvider(requireActivity())[AuthViewModel::class.java]
 
+        // initial bind
         val post = args.post
+        bindPost(post)
 
-        val tvUsername: TextView = binding.tvUsername
-        val tvTime: TextView = binding.tvTime
-        val tvContent: TextView = binding.tvContent
-        val ivImage: ImageView = binding.ivImage
-        val ivProfile: ImageView = binding.ivProfile
-        val btnEdit : Button = binding.btnEditPost
-        val btnDelete : Button = binding.btnDelete
+        // listen for updated post result from EditPostFragment
+        parentFragmentManager.setFragmentResultListener(
+            "post_updated", viewLifecycleOwner
+        ) { _, bundle ->
+            val updatedPostId = bundle.getString("updated_post_id")
+            if (!updatedPostId.isNullOrEmpty()) {
+                val updatedPost = postViewModel.posts.value?.find { it.postId == updatedPostId }
+                if (updatedPost != null) {
+                    bindPost(updatedPost.toModel())  // Convert PostEntity to Post
+                }
+            }
+        }
+    }
 
+    private fun bindPost(post: Post) {
         val sdf = SimpleDateFormat("d 'of' MMM 'at' HH:mm", Locale.getDefault())
-
-
-        /** Setting the UI **/
-
-        tvUsername.text = post.username
-        tvContent.text = post.content
-        tvTime.text = sdf.format(Date(post.timestamp))
 
         // Profile image
         if (!post.profileImageUrl.isNullOrEmpty()) {
-            Glide.with(requireContext()).load(post.profileImageUrl).into(ivProfile)
+            Glide.with(requireContext()).load(post.profileImageUrl).into(binding.ivProfile)
         } else {
-            ivProfile.setImageResource(R.drawable.ic_default_profile)
+            binding.ivProfile.setImageResource(R.drawable.ic_default_profile)
         }
 
-        // Post image (if exists)
+        binding.tvUsername.text = post.username
+
+        // Post image
         if (!post.photoUrl.isNullOrEmpty()) {
-            ivImage.visibility = View.VISIBLE
-            Glide.with(requireContext()).load(post.photoUrl).into(ivImage)
+            binding.ivImage.visibility = View.VISIBLE
+            Glide.with(requireContext()).load(post.photoUrl).into(binding.ivImage)
         } else {
-            ivImage.visibility = View.GONE
+            binding.ivImage.visibility = View.GONE
         }
 
-        // Edit and delete buttons
+        // Post timestamp
+        binding.tvTime.text = sdf.format(Date(post.timestamp))
 
-        // Show buttons only if the post belongs to the current user
-        if (authViewModel.user.value?.uid == post.uid) {
-            btnEdit.visibility = View.VISIBLE
-            btnDelete.visibility = View.VISIBLE
-        } else {
-            btnEdit.visibility = View.GONE
-            btnDelete.visibility = View.GONE
-        }
+        // Post content
+        binding.tvContent.text = post.content
 
-        /** Listeners **/
 
-        // Edit button
 
-        btnEdit.setOnClickListener {
+        // Show edit/delete buttons if current user owns the post
+        val isCurrentUser = authViewModel.user.value?.uid == post.uid
+        binding.btnEditPost.visibility = if (isCurrentUser) View.VISIBLE else View.GONE
+        binding.btnDelete.visibility = if (isCurrentUser) View.VISIBLE else View.GONE
+
+        // edit button listener
+        binding.btnEditPost.setOnClickListener {
             val action = ViewPostFragmentDirections.actionViewPostFragmentToEditPostFragment(post)
             findNavController().navigate(action)
         }
 
-
-
-
-
-
-
-
+        // Delete button listener (optional)
+        binding.btnDelete.setOnClickListener {
+            postViewModel.deletePost(post.postId)
+            findNavController().navigateUp()
+        }
     }
+
+    // Helper: Convert PostEntity to Post
+    private fun PostEntity.toModel(): Post {
+        return Post(
+            postId = postId,
+            uid = uid,
+            content = content,
+            photoUrl = photoUrl,
+            username = username,
+            profileImageUrl = profileImageUrl,
+            timestamp = timestamp
+        )
+    }
+
 }
