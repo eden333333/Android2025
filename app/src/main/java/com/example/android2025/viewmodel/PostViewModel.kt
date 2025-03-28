@@ -98,8 +98,51 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
            repository.updatePostUsernameAndProfile(username, oldUsername,profileImageUrl)
         }
     }
-    fun getPostById(postId: String): Post?{
+
+    fun getPostById(postId: String): PostEntity?{
         return runBlocking { repository.getPostById(postId) }
+    }
+
+
+
+    fun postListener(postId: String): LiveData<PostEntity>?{
+        return repository.postListener(postId)
+    }
+
+
+    fun updatePost(existingPost: PostEntity, content:String, imageUri: Uri?,){
+
+        viewModelScope.launch {
+            val photoUrl = imageUri?.let { uri ->
+                repository.uploadImageToCloudinary(uri).getOrNull()
+            }
+            val updatedPost =  PostEntity(
+                postId = existingPost.postId,
+                uid = existingPost.uid,
+                content = content,
+                photoUrl = photoUrl?:existingPost.photoUrl,
+                username = existingPost.username,
+                profileImageUrl = existingPost.profileImageUrl,
+                timestamp = existingPost.timestamp
+            )
+            val result = repository.updatePost(updatedPost)
+            result.onSuccess {
+                Log.d("PostViewModel", "Post updated successfully")
+                _errorUploadPost.value = ""
+                _loading.value = false
+            }.onFailure {
+                Log.e("PostViewModel", "Failed to update post: ${it.message}")
+                _errorUploadPost.value = it.message
+                _loading.value = false
+            }
+        }
+    }
+
+    fun deletePost(postId: String){
+        viewModelScope.launch {
+
+            repository.deletePostById(postId)
+        }
     }
 
 }

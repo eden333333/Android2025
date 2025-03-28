@@ -14,6 +14,7 @@ import com.example.android2025.R
 import com.example.android2025.data.model.Post
 import com.example.android2025.databinding.FragmentHomeBinding
 import com.example.android2025.ui.adapters.PostAdapter
+import com.example.android2025.ui.postFragments.ViewPostFragmentArgs
 import com.example.android2025.viewmodel.PostViewModel
 
 class HomeFragment : Fragment() {
@@ -36,33 +37,17 @@ class HomeFragment : Fragment() {
         // recyclerView setup with a LinearLayoutManager and A PostAdapter
 
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        postAdapter = PostAdapter(emptyList()) {
-            postId ->
-            run {
-                val bundle = Bundle().apply { putString("postId", postId) }
-                findNavController().navigate(R.id.viewPostFragment, bundle)
-            }
+        postAdapter = PostAdapter(emptyList()){postId ->
+            val action = HomeFragmentDirections.actionHomeFragmentToViewPostFragment(
+                postId=postId
+            )
+            findNavController().navigate(action)
+
         }
         binding.recyclerView.adapter = postAdapter
 
-        // LiveData Observers
+        // observing the posts LiveData and updating the adapter when posts change
 
-        // Observe the loading LiveData to show/hide the ProgressBar
-        postViewModel.loading.observe(viewLifecycleOwner) { loading ->
-            binding.progressBar.visibility = if (loading) View.VISIBLE else View.GONE
-        }
-
-        // Observe the errorLoadingPosts LiveData to show/hide the error message
-        postViewModel.errorLoadingPosts.observe(viewLifecycleOwner) { errorMsg  ->
-            if (!errorMsg.isNullOrEmpty()) {
-                binding.tvError.text = errorMsg
-                binding.tvError.visibility = View.VISIBLE
-            } else {
-                binding.tvError.visibility = View.GONE
-            }
-        }
-
-        // Observe the posts LiveData to update the adapter
         postViewModel.posts.observe(viewLifecycleOwner) { posts ->
             // Cast posts from PostEntity to Post and update the adapter
             postAdapter.updatePosts(posts.map { postEntity ->
@@ -79,6 +64,14 @@ class HomeFragment : Fragment() {
 
         }
 
+        postViewModel.errorLoadingPosts.observe(viewLifecycleOwner) { errorMsg  ->
+            if (!errorMsg.isNullOrEmpty()) {
+                binding.tvError.text = errorMsg
+                binding.tvError.visibility = View.VISIBLE
+            } else {
+                binding.tvError.visibility = View.GONE
+            }
+        }
 
         // setting FloatingActionButton listener to upload a new post
         binding.fabAddPost.setOnClickListener {

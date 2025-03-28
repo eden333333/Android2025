@@ -12,11 +12,13 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.android2025.R
 import com.example.android2025.data.model.Post
 import com.example.android2025.databinding.FragmentCreatePostBinding
 import com.example.android2025.databinding.FragmentViewPostBinding
+import com.example.android2025.ui.home.HomeFragmentDirections
 import com.example.android2025.viewmodel.PostViewModel
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -36,6 +38,7 @@ private const val ARG_PARAM2 = "param2"
 class ViewPostFragment : Fragment() {
     private var _binding: FragmentViewPostBinding? = null
     private val binding get() = _binding!!
+    private var rootView: View? = null
 
     private lateinit var postViewModel: PostViewModel
     private lateinit var authViewModel: AuthViewModel
@@ -46,11 +49,9 @@ class ViewPostFragment : Fragment() {
 
     }
 
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        postViewModel = ViewModelProvider(requireActivity()).get(PostViewModel::class.java)
-        authViewModel = ViewModelProvider(requireActivity()).get(AuthViewModel::class.java)
+    fun loadData(postId: String?, view: View){
         val tvUsername: TextView = binding.tvUsername
+        val tvTime: TextView = binding.tvTime
         val tvContent: TextView = binding.tvContent
         val ivImage: ImageView = binding.ivImage
         val ivProfile: ImageView = binding.ivProfile
@@ -58,19 +59,14 @@ class ViewPostFragment : Fragment() {
         val btnDelete : Button = binding.btnDelete
 
         val sdf = SimpleDateFormat("d 'of' MMM 'at' HH:mm", Locale.getDefault())
-
-        //holder.tvTime.text = formattedTime
-
-        val postId = arguments?.getString("postId")
-
         if(postId != null){
-            lifecycleScope.launch {
-                val post: Post? = postViewModel.getPostById(postId)
-                if(post != null){
+            postViewModel.postListener(postId)?.observe(viewLifecycleOwner) { post ->
+                post?.let {
                     tvUsername.text = post.username
                     tvContent.text = post.content
                     val formattedTime = sdf.format(Date(post.timestamp))
-                    //TODO ad timestamp
+                    tvTime.text = formattedTime
+
                     if (!post.photoUrl.isNullOrEmpty()) {
                         ivImage.visibility = View.VISIBLE
                         Glide.with(view.context)
@@ -83,9 +79,9 @@ class ViewPostFragment : Fragment() {
                         ivProfile.visibility = View.VISIBLE
                         Glide.with(view.context)
                             .load(post.profileImageUrl)
-                            .into(ivImage)
+                            .into(ivProfile)
                     } else {
-                        ivProfile.visibility = View.GONE
+                        ivProfile.setImageResource(R.drawable.ic_default_profile)
                     }
                     authViewModel.user.observe(viewLifecycleOwner) { user ->
                         user?.let {
@@ -95,12 +91,36 @@ class ViewPostFragment : Fragment() {
                             }
                         }
                     }
-
+                    btnEdit.setOnClickListener( {view ->
+                        val action = ViewPostFragmentDirections.actionViewPostFragmentToEditPostFragment(post.postId)
+                        findNavController().navigate(action)
+                    })
+                    btnDelete.setOnClickListener( {view ->
+                        postViewModel.deletePost(post.postId)
+                        val action = ViewPostFragmentDirections.actionViewPostFragmentToHomeFragment()
+                        findNavController().navigate(action)
+                    })
                 }
             }
+
+
+
+
         }else{
             tvContent.text = "Post not found"
         }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        postViewModel = ViewModelProvider(requireActivity()).get(PostViewModel::class.java)
+        authViewModel = ViewModelProvider(requireActivity()).get(AuthViewModel::class.java)
+
+
+        //holder.tvTime.text = formattedTime
+        rootView = view
+        val postId = arguments?.getString("postId")
+        loadData(postId, view)
+
 
     }
     override fun onCreateView(
@@ -112,6 +132,7 @@ class ViewPostFragment : Fragment() {
         _binding = FragmentViewPostBinding.inflate(inflater, container, false)
         return binding.root
     }
+
 
 
 }

@@ -3,6 +3,7 @@ package com.example.android2025.data.repository
 import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.asLiveData
 import com.cloudinary.Cloudinary
 import com.example.android2025.data.local.PostDao
 import com.example.android2025.data.local.PostEntity
@@ -58,17 +59,28 @@ class PostRepository(private val context: Context, private val postDao: PostDao)
         }
     }
 
-    suspend fun getPostById(postId: String): Post?{
-        val entity: PostEntity = postDao.getPostById(postId)
-        return Post(
-            postId=entity.postId,
-            uid = entity.uid,
-            username = entity.username,
-            profileImageUrl = entity.profileImageUrl,
-            content = entity.content,
-            photoUrl = entity.photoUrl,
-            timestamp = entity.timestamp,
-        )
+    suspend fun getPostById(postId: String): PostEntity?{
+        return postDao.getPostById(postId)
+
+
+    }
+    fun postListener(postId: String): LiveData<PostEntity>?{
+        return postDao.getPostByIdListener(postId)?.asLiveData()
+
+    }
+
+    suspend fun deletePostById(postId: String):Result<Unit>{
+        try{
+            firestore.collection("posts").document(postId).delete()
+            withContext(Dispatchers.IO){
+                postDao.deletePostById(postId)
+            }
+            return Result.success(Unit)
+        }catch (e: Exception) {
+            return Result.failure(e)
+        }
+
+
     }
 
     // Upload a new post to Firestore and update Room locally.
@@ -90,6 +102,27 @@ class PostRepository(private val context: Context, private val postDao: PostDao)
             }
             return Result.success(postEntity)
         } catch (e: Exception) {
+            return Result.failure(e)
+        }
+    }
+
+    suspend fun updatePost(post: PostEntity): Result<Unit>{
+        try{
+            val updatedPost =  Post(
+                postId = post.postId,
+                uid = post.uid,
+                content = post.content,
+                photoUrl = post.photoUrl,
+                username = post.username,
+                profileImageUrl = post.profileImageUrl,
+                timestamp = post.timestamp
+            )
+            withContext(Dispatchers.IO) {
+                firestore.collection("posts").document(updatedPost.postId).update(updatedPost.toMap()).await()
+                postDao.updatePost(post.content, post.photoUrl, post.postId);
+            }
+            return Result.success(Unit)
+        }catch(e: Exception){
             return Result.failure(e)
         }
     }
