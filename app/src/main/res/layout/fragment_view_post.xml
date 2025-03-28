@@ -8,8 +8,8 @@
     android:gravity="center"
     android:orientation="vertical">
 
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-android:layout_width="match_parent"
+<androidx.cardview.widget.CardView
+    android:layout_width="match_parent"
 android:layout_height="wrap_content"
 android:layout_margin="16dp"
 android:background="@android:color/white"
@@ -78,7 +78,7 @@ app:cardElevation="8dp">
     <ImageView
         android:id="@+id/ivImage"
         android:layout_width="0dp"
-        android:layout_height="200dp"
+        android:layout_height="wrap_content"
         android:scaleType="centerCrop"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
