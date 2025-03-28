@@ -31,7 +31,6 @@ class ProfileFragment : Fragment() {
         // Initialize ViewModel
         authViewModel = ViewModelProvider(requireActivity())[AuthViewModel::class.java]
 
-
         //Observers
 
         // Observe the user data from ViewModel

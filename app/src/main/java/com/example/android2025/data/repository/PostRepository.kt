@@ -59,15 +59,6 @@ class PostRepository(private val context: Context, private val postDao: PostDao)
         }
     }
 
-    suspend fun getPostById(postId: String): PostEntity?{
-        return postDao.getPostById(postId)
-
-
-    }
-    fun postListener(postId: String): LiveData<PostEntity>?{
-        return postDao.getPostByIdListener(postId)?.asLiveData()
-
-    }
 
     suspend fun deletePostById(postId: String):Result<Unit>{
         try{
@@ -106,22 +97,24 @@ class PostRepository(private val context: Context, private val postDao: PostDao)
         }
     }
 
-    suspend fun updatePost(post: PostEntity): Result<Unit>{
+    // Update a post in Firestore and Room
+    suspend fun updatePost(post: Post): Result<PostEntity>{
         try{
-            val updatedPost =  Post(
+            // update Firestore
+            firestore.collection("posts").document(post.postId).update(post.toMap()).await()
+            // update Room
+            withContext(Dispatchers.IO){
+                postDao.updatePost(post.postId, post.photoUrl, post.content)
+            }
+            return Result.success(PostEntity(
                 postId = post.postId,
                 uid = post.uid,
-                content = post.content,
-                photoUrl = post.photoUrl,
                 username = post.username,
                 profileImageUrl = post.profileImageUrl,
+                content = post.content,
+                photoUrl = post.photoUrl,
                 timestamp = post.timestamp
-            )
-            withContext(Dispatchers.IO) {
-                firestore.collection("posts").document(updatedPost.postId).update(updatedPost.toMap()).await()
-                postDao.updatePost(post.content, post.photoUrl, post.postId);
-            }
-            return Result.success(Unit)
+            ))
         }catch(e: Exception){
             return Result.failure(e)
         }

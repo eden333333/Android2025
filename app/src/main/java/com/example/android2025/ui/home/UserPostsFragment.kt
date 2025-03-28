@@ -36,11 +36,9 @@ class UserPostsFragment: Fragment() {
         // recyclerView setup with a LinearLayoutManager and A PostAdapter
 
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        postAdapter = PostAdapter(emptyList()){postId ->
-            run {
-                val bundle = Bundle().apply { putString("postId", postId) }
-                findNavController().navigate(R.id.viewPostFragment, bundle)
-            }
+        postAdapter = PostAdapter(emptyList()) { post ->
+            val action = UserPostsFragmentDirections.actionUserPostsFragmentToViewPostFragment(post)
+            findNavController().navigate(action)
         }
         binding.recyclerView.adapter = postAdapter
 

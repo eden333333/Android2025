@@ -65,17 +65,7 @@
                 android:src="@drawable/ic_add_photo"
                 app:shapeAppearanceOverlay="@style/CircleImageView" />
 
-            <!-- Error Message -->
-            <TextView
-                android:id="@+id/tvPostError"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:textColor="@android:color/holo_red_dark"
-                android:textSize="14sp"
-                android:visibility="gone"
-                android:text=""
-                android:textAlignment="center" />
+
 
             <!-- Upload Post Button -->
             <Button
@@ -87,6 +77,29 @@
                 android:text="Update Post"
                 android:textColor="@android:color/white"
                 android:textStyle="bold" />
+
+            <!-- ProgressBar -->
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:indeterminateTint="@color/blue"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+            <!-- Error Message -->
+            <TextView
+                android:id="@+id/tvPostError"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:textColor="@android:color/holo_red_dark"
+                android:textSize="14sp"
+                android:visibility="gone"
+                android:text=""
+                android:textAlignment="center" />
 
             <!-- Cancel Option -->
             <TextView

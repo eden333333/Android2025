@@ -38,6 +38,7 @@ class MainActivity :  AppCompatActivity() {
             insets
         }
         /** Set up the toolbar **/
+
         val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
 
@@ -52,15 +53,28 @@ class MainActivity :  AppCompatActivity() {
         // Connect the toolbar with navController
         NavigationUI.setupActionBarWithNavController(this, navController)
 
-        // listen for changes in the navigation destination.
+        // Toolbar visibility
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            // checking if the current destination is the Login or Register fragment.
+
+            // Hide the toolbar in the login and register fragments
             if (destination.id == R.id.loginFragment || destination.id == R.id.registerFragment) {
                 supportActionBar?.hide()
             } else {
                 supportActionBar?.show()
             }
+
+            // Disable back button in top-level destinations
+            val topLevelDestinations = setOf(
+                R.id.homeFragment,
+                R.id.weatherSearchFragment,
+                R.id.profileFragment,
+                R.id.userPostsFragment
+            )
+            val isTopLevel = destination.id in topLevelDestinations
+            supportActionBar?.setDisplayHomeAsUpEnabled(!isTopLevel)
         }
+
+
         /** Register the global image picker launcher */
         imagePickerLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
             imagePickerCallback?.invoke(uri)

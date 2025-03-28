@@ -59,7 +59,8 @@ app:cardElevation="8dp">
         app:layout_constraintStart_toEndOf="@id/ivProfile"
         app:layout_constraintTop_toBottomOf="@+id/tvUsername" />
 
-    <!-- Post Image -->
+    <!-- Post Content -->
+
     <TextView
         android:id="@+id/tvContent"
         android:layout_width="0dp"
@@ -74,16 +75,17 @@ app:cardElevation="8dp">
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ivProfile" />
+    <!-- Post Image -->
 
     <ImageView
         android:id="@+id/ivImage"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:scaleType="centerCrop"
+        android:scaleType="fitCenter"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvContent"
         app:layout_constraintVertical_bias="0.0" />

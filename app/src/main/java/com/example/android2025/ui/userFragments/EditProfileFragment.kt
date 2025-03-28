@@ -53,7 +53,6 @@ class EditProfileFragment : Fragment() {
 
         // Save button listener
         binding.btnSave.setOnClickListener {
-            // Clear error message
             binding.tvError.text = ""
 
             val username = binding.etUsername.text.toString()
@@ -67,7 +66,6 @@ class EditProfileFragment : Fragment() {
                     binding.tvError.visibility = View.VISIBLE
                     return@setOnClickListener
                 }
-
                 else -> {
                     binding.tvError.visibility = View.GONE
                 }
@@ -98,15 +96,6 @@ class EditProfileFragment : Fragment() {
 
         // Observers
 
-        // Observe loading state and show/hide progress bar
-        authViewModel.loading.observe(viewLifecycleOwner) { isLoading ->
-            if (isLoading) {
-                binding.progressBar.visibility = View.VISIBLE
-                binding.btnSave.isEnabled = false
-            } else {
-                binding.progressBar.visibility = View.GONE
-            }
-        }
 
         // Observe error messages and display them
         authViewModel.errorUpdateUser.observe(viewLifecycleOwner) { errorMsg ->
@@ -115,6 +104,16 @@ class EditProfileFragment : Fragment() {
             } else {
                 binding.tvError.text = errorMsg
                 binding.tvError.visibility = View.VISIBLE
+            }
+        }
+
+        // Observe loading state and show/hide progress bar
+        authViewModel.loading.observe(viewLifecycleOwner) { isLoading ->
+            if (isLoading) {
+                binding.progressBar.visibility = View.VISIBLE
+                binding.btnSave.isEnabled = false
+            } else {
+                binding.progressBar.visibility = View.GONE
             }
         }
 

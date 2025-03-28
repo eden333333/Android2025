@@ -37,16 +37,30 @@ class HomeFragment : Fragment() {
         // recyclerView setup with a LinearLayoutManager and A PostAdapter
 
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        postAdapter = PostAdapter(emptyList()){postId ->
-            val action = HomeFragmentDirections.actionHomeFragmentToViewPostFragment(
-                postId=postId
-            )
+        postAdapter = PostAdapter(emptyList()){post ->
+            val action = HomeFragmentDirections.actionHomeFragmentToViewPostFragment(post)
             findNavController().navigate(action)
-
         }
         binding.recyclerView.adapter = postAdapter
 
-        // observing the posts LiveData and updating the adapter when posts change
+        // LiveData Observers
+
+        // Observe the loading LiveData to show/hide the ProgressBar
+        postViewModel.loading.observe(viewLifecycleOwner) { loading ->
+            binding.progressBar.visibility = if (loading) View.VISIBLE else View.GONE
+        }
+
+        // Observe the errorLoadingPosts LiveData to show/hide the error message
+        postViewModel.errorLoadingPosts.observe(viewLifecycleOwner) { errorMsg  ->
+            if (!errorMsg.isNullOrEmpty()) {
+                binding.tvError.text = errorMsg
+                binding.tvError.visibility = View.VISIBLE
+            } else {
+                binding.tvError.visibility = View.GONE
+            }
+        }
+
+        // Observe the posts LiveData to update the adapter
 
         postViewModel.posts.observe(viewLifecycleOwner) { posts ->
             // Cast posts from PostEntity to Post and update the adapter
@@ -64,14 +78,6 @@ class HomeFragment : Fragment() {
 
         }
 
-        postViewModel.errorLoadingPosts.observe(viewLifecycleOwner) { errorMsg  ->
-            if (!errorMsg.isNullOrEmpty()) {
-                binding.tvError.text = errorMsg
-                binding.tvError.visibility = View.VISIBLE
-            } else {
-                binding.tvError.visibility = View.GONE
-            }
-        }
 
         // setting FloatingActionButton listener to upload a new post
         binding.fabAddPost.setOnClickListener {

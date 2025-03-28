@@ -14,7 +14,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class PostAdapter(private var posts: List<Post>, private val onViewPost:(String) -> Unit) : RecyclerView.Adapter<PostAdapter.PostViewHolder>() {
+class PostAdapter(private var posts: List<Post>, private val onViewPost:(Post) -> Unit) : RecyclerView.Adapter<PostAdapter.PostViewHolder>() {
 
     inner class PostViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val tvUsername: TextView = itemView.findViewById(R.id.tvUsername)
@@ -53,12 +53,13 @@ class PostAdapter(private var posts: List<Post>, private val onViewPost:(String)
             holder.ivImage.visibility = View.GONE
         }
         // Bind post time
-        // Format timestamp
         val sdf = SimpleDateFormat("d 'of' MMM 'at' HH:mm", Locale.getDefault())
         val formattedTime = sdf.format(Date(post.timestamp))
         holder.tvTime.text = formattedTime
+
+        // Handle click event to navigate to the ViewPostFragment
         holder.itemView.setOnClickListener {
-            onViewPost(post.postId)
+            onViewPost(post)
         }
 
     }

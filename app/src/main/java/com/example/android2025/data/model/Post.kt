@@ -1,5 +1,7 @@
 package com.example.android2025.data.model
 
+import java.io.Serializable
+
 data class Post(
     val postId: String = "",
     val uid: String = "",
@@ -8,7 +10,7 @@ data class Post(
     val content: String = "",
     val photoUrl: String? = null,
     val timestamp: Long = System.currentTimeMillis()
-) {
+) : Serializable {
     fun toMap(): Map<String, Any?> {
         return mapOf(
             "postId" to postId,

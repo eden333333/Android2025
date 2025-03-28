@@ -26,6 +26,8 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     private val postDao = AppDatabase.getDatabase(application).postDao()
     private val repository = PostRepository(application, postDao)
 
+
+
     // LiveData from the local Room database
 
     val posts: LiveData<List<PostEntity>> = repository.getPosts()
@@ -41,6 +43,9 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
 
     private val _errorUploadPost = MutableLiveData<String>()
     val errorUploadPost: LiveData<String> = _errorUploadPost
+
+    private val _errorUpdatePost = MutableLiveData<String>()
+    val errorUpdatePost: LiveData<String> = _errorUpdatePost
 
 
     fun refreshPosts() {
@@ -70,7 +75,6 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
             val photoUrl = imageUri?.let { uri ->
                 repository.uploadImageToCloudinary(uri).getOrNull()
             }
-
             val postId = UUID.randomUUID().toString()
             val post = Post(
                 postId = postId,
@@ -98,25 +102,14 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
            repository.updatePostUsernameAndProfile(username, oldUsername,profileImageUrl)
         }
     }
-
-    fun getPostById(postId: String): PostEntity?{
-        return runBlocking { repository.getPostById(postId) }
-    }
-
-
-
-    fun postListener(postId: String): LiveData<PostEntity>?{
-        return repository.postListener(postId)
-    }
-
-
-    fun updatePost(existingPost: PostEntity, content:String, imageUri: Uri?,){
-
+    fun updatePost(existingPost: Post, content:String, imageUri: Uri?,){
+        _loading.value = true
+        _errorUpdatePost.value = ""
         viewModelScope.launch {
             val photoUrl = imageUri?.let { uri ->
                 repository.uploadImageToCloudinary(uri).getOrNull()
             }
-            val updatedPost =  PostEntity(
+            val updatedPost =  Post(
                 postId = existingPost.postId,
                 uid = existingPost.uid,
                 content = content,
